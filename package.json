@@ -10,7 +10,8 @@
     "watch": "node build.mjs --watch",
     "demo": "node demo/serve.mjs",
     "test": "node --test test/detect.test.ts",
-    "e2e": "npm run build && node test/e2e.mjs"
+    "e2e": "npm run build && node test/e2e.mjs",
+    "package": "npm run build && node scripts/package.mjs"
   },
   "dependencies": {
     "@noble/hashes": "2.4.0",
