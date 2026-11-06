@@ -76,7 +76,19 @@ async function syncRules() {
     priority: 1,
     action: { type: chrome.declarativeNetRequest.RuleActionType.BLOCK },
     // Only third-party use is blocked; the recipient's own site keeps working.
-    condition: { requestDomains: [host], excludedInitiatorDomains: [host] },
+    // Data-carrying request types only: scripts still load, so the page hook can
+    // catch and report each attempt as "blocked" instead of the page going silent.
+    condition: {
+      requestDomains: [host],
+      excludedInitiatorDomains: [host],
+      resourceTypes: [
+        chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
+        chrome.declarativeNetRequest.ResourceType.PING,
+        chrome.declarativeNetRequest.ResourceType.IMAGE,
+        chrome.declarativeNetRequest.ResourceType.WEBSOCKET,
+        chrome.declarativeNetRequest.ResourceType.OTHER,
+      ],
+    },
   }));
   await chrome.declarativeNetRequest.updateSessionRules({ removeRuleIds, addRules });
 }
