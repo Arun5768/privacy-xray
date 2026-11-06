@@ -47,3 +47,8 @@ test('localhost and 127.0.0.1 are different sites', () => {
   assert.notEqual(siteOf('http://localhost:5173/'), siteOf('http://127.0.0.1:5174/'));
   assert.equal(siteOf('https://eth-mainnet.g.alchemy.com/v2/x'), 'alchemy.com');
 });
+
+test('apps on the same hosting platform are different sites', () => {
+  assert.notEqual(siteOf('https://alice.github.io/app'), siteOf('https://tracker.github.io/x'));
+  assert.notEqual(siteOf('https://a.vercel.app'), siteOf('https://b.vercel.app'));
+});

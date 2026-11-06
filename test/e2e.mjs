@@ -30,7 +30,7 @@ try {
   const dapp = await browser.newPage();
   async function runOnce(label) {
     await fetch('http://127.0.0.1:5174/reset');
-    await dapp.goto('http://localhost:5173', { waitUntil: 'load' });
+    await dapp.goto('http://localhost:5173/demo/', { waitUntil: 'load' });
     await dapp.bringToFront();
     const t0 = Date.now();
     await dapp.click('#demoWallet');

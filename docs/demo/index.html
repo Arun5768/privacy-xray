@@ -11,6 +11,9 @@
     button { width: 100%; padding: 12px; border: 0; border-radius: 6px; background: #ff5a1f; color: #fff; font: 700 15px system-ui; cursor: pointer; }
     button.secondary { margin-top: 8px; background: none; color: #16140f; border: 1px solid #16140f; font-weight: 600; }
     #addr { margin-top: 14px; font: 13px ui-monospace, Consolas, monospace; word-break: break-all; }
+    body { grid-template-rows: 1fr auto; }
+    .note { max-width: 420px; margin: 0 16px 24px; color: #6b665c; font-size: 12px; text-align: center; }
+    .note code { font-size: 11px; }
   </style>
 </head>
 <body>
@@ -21,6 +24,7 @@
     <button id="demoWallet" class="secondary">Use a throwaway demo wallet</button>
     <div id="addr"></div>
   </div>
+  <p class="note">Demo for <a href="../">Privacy X-Ray</a>. The analytics script here is deliberately leaky; on the hosted version it reports to <code>collect.demotrack.invalid</code>, a domain that cannot exist, so nothing reaches a real third party.</p>
   <script>
     // Throwaway demo wallet: a minimal EIP-1193 provider with a fixed, unused address.
     const DEMO_ADDRESS = '0x52908400098527886e0f7030069857d2e4169ee7';
@@ -44,7 +48,8 @@
       return new Promise((resolve) => {
         if (window.DemoTrack) return resolve();
         const s = document.createElement('script');
-        s.src = 'http://127.0.0.1:5174/leaky-analytics.js';
+        // Local demo: load from the tracker origin. Hosted demo: same folder.
+        s.src = location.hostname === 'localhost' ? 'http://127.0.0.1:5174/leaky-analytics.js' : 'leaky-analytics.js';
         s.onload = resolve;
         s.onerror = resolve; // blocked analytics must never break the dApp
         document.head.appendChild(s);

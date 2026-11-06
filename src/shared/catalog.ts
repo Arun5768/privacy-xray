@@ -3,8 +3,10 @@ import type { Category } from './types.ts';
 
 // Registrable domain, falling back to the hostname for localhost and IPs so
 // the two demo origins (localhost vs 127.0.0.1) count as different parties.
+// Private suffixes (github.io, vercel.app, …) count as registries, so two
+// different apps hosted on the same platform are still different parties.
 export function siteOf(url: string): string {
-  return getDomain(url) ?? getHostname(url) ?? url;
+  return getDomain(url, { allowPrivateDomains: true }) ?? getHostname(url) ?? url;
 }
 
 export function hostOf(url: string): string {
@@ -50,6 +52,7 @@ const CATALOG: Record<string, Entry> = {
   'logrocket.io': { company: 'LogRocket', category: 'error' },
   // Demo tracker
   '127.0.0.1': { company: 'DemoTrack Analytics', category: 'analytics' },
+  'demotrack.invalid': { company: 'DemoTrack Analytics', category: 'analytics' },
 };
 
 export function classify(url: string, body: string | null): Entry & { known: boolean } {
