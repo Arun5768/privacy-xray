@@ -3,63 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Leak Registry · 0xRay</title>
+  <title>Leak registry · 0xRay</title>
   <meta name="description" content="Look up which companies a crypto site was observed sending wallet addresses to. Read live from Arkiv." />
+  <meta name="color-scheme" content="dark" />
   <link rel="icon" href="../favicon.png" />
-  <link rel="stylesheet" href="../site.css" />
-  <style>
-    .reg { padding-top: 32px; }
-    .reg form { display: flex; gap: 12px; flex-wrap: wrap; margin: 24px 0 8px; }
-    .reg input { flex: 1; min-width: 220px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--ink); font: 16px var(--mono); }
-    .reg button { cursor: pointer; font: inherit; }
-    .muted, #status { color: var(--muted); font-size: 14px; }
-    #status { font-family: var(--mono); margin: 8px 0 24px; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); font-size: 15px; }
-    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-    th { font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
-    td code { border: 0; padding: 0; background: none; font-size: 12px; color: var(--muted); }
-    .about { margin-top: 48px; color: var(--muted); font-size: 15px; max-width: 48em; }
-    .about code { font-size: 12px; word-break: break-all; }
-  </style>
+  <link rel="stylesheet" href="../assets/app.css" />
 </head>
-<body>
-  <header class="nav wrap">
-    <a class="logo" href="../" aria-label="0xRay home"><img src="../img/logo.svg" width="38" height="38" alt="" /><span class="wordmark"><b>0x</b>Ray</span></a>
-    <nav>
-      <a href="../#how">How it works</a>
-      <a href="../demo/">Demo</a>
-      <a href="https://github.com/Arun5768/privacy-xray">GitHub</a>
-      <a class="btn small" href="../privacy-xray-extension.zip" download>Download</a>
-    </nav>
+<body data-page="registry">
+  <!-- Live status: reads only this browser's own environment; nothing is sent anywhere. -->
+  <div id="live" class="live idle"><span class="dot"></span><span id="liveText">Scanning this browser…</span></div>
+
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="logo" href="../" aria-label="0xRay home">
+        <svg class="eye" viewBox="0 0 128 128" aria-hidden="true">
+          <rect width="128" height="128" rx="30" fill="#0b0b12" />
+          <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#14141f" stroke="#f5f3ff" stroke-width="8" stroke-linejoin="round" />
+          <g class="pupil"><circle cx="64" cy="64" r="22" fill="#3cf0d4" /><circle cx="64" cy="64" r="9" fill="#0b0b12" /><circle cx="70" cy="57" r="4" fill="#fff" /></g>
+        </svg>
+        <span class="wordmark">0x<em>Ray</em></span>
+      </a>
+      <nav aria-label="Main">
+        <a data-nav="scan" href="../scan/">Scan</a>
+        <a data-nav="how" href="../how/">How it works</a>
+        <a data-nav="registry" href="../registry/">Registry</a>
+        <a data-nav="teams" href="../teams/">For teams</a>
+        <a href="../demo/">Demo</a>
+      </nav>
+      <a class="btn btn-lime small magnetic" href="../privacy-xray-extension.zip" download>Get 0xRay</a>
+    </div>
   </header>
 
-  <main class="wrap reg">
-    <p class="kicker">Public registry · stored on Arkiv</p>
-    <h1>Check a site before you connect.</h1>
-    <p class="lede">Look up which third parties a crypto site was observed sending a wallet address to. Every row is read live from the Arkiv network, not from our server, and expires after 30 days so it only shows recent behaviour.</p>
-
-    <form id="form">
-      <input id="site" placeholder="etherscan.io" autocomplete="off" spellcheck="false" aria-label="Site to look up" />
-      <button class="btn primary" type="submit">Look up</button>
-    </form>
-    <div id="status"></div>
-
-    <h2 id="heading"></h2>
-    <div id="results" class="table-wrap"></div>
-
-    <section class="about">
-      <h3>How this registry works</h3>
-      <p>Observations come from 0xRay's field survey (<code>test/field-survey.mjs</code>), which opens a site for a randomly generated address that belongs to nobody and records which third parties receive it. They are published as Arkiv entities with the schema <code>privacy-xray.observation</code>: site, recipient, category, where the address was found, its encoding, the outcome and the date. No wallet address is ever published.</p>
-      <p>Anyone can write entities with this schema, so this page shows only those published by the 0xRay survey account <code id="publisher"></code>. Observations are not accusations: an address in a URL is normal for explorers; the registry makes visible who receives it.</p>
-      <p>The browser extension itself never contacts Arkiv or any other server. This page does, from your browser, using Arkiv's public endpoint.</p>
+  <main>
+<section class="hero">
+      <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="wrap">
+        <p class="kicker"><i></i>Public registry · stored on Arkiv</p>
+        <h1 class="display words">Check a site <em class="cyan">before</em> you connect.</h1>
+        <p class="lede">Which third parties did a crypto site send a wallet address to? Every row is read live from the Arkiv network, not from our server, and expires after 30 days, so it only shows recent behaviour.</p>
+        <form id="form" class="field scan-field">
+          <input id="site" placeholder="etherscan.io" autocomplete="off" spellcheck="false" aria-label="Site to look up" />
+          <button class="btn btn-lime magnetic" type="submit">Look up <span class="arrow">→</span></button>
+        </form>
+        <p id="status" class="consent mono"></p>
+      </div>
     </section>
+
+    <section class="wrap reg">
+      <h2 id="heading" class="title"></h2>
+      <div id="results" class="table-wrap"></div>
+      <div class="cards reg-about">
+        <div class="card reveal"><span class="chip cyan">Source</span><h3>Field survey</h3><p>A script opens each site for a random address that belongs to nobody and records which third parties receive it. No wallet address is ever published.</p></div>
+        <div class="card reveal" style="--d:.08s"><span class="chip violet">Trust</span><h3>Only our publisher</h3><p>Anyone can write entities with this schema, so this page shows only those from the survey account <code id="publisher" class="mono"></code>.</p></div>
+        <div class="card reveal" style="--d:.16s"><span class="chip lime">Privacy</span><h3>Extension stays offline</h3><p>The browser extension never contacts Arkiv. This page does, from your browser, using Arkiv's public endpoint. Observations are not accusations.</p></div>
+      </div>
+    </section>
+
   </main>
 
-  <footer class="wrap foot">
-    <span>0xRay · built at ETHGlobal Mumbai 2026 · MIT</span>
-    <span>This page talks only to Arkiv's public testnet endpoint.</span>
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <div class="foot-brand">
+        <span class="wordmark big">0x<em>Ray</em></span>
+        <p>See who's watching your wallet. Built at ETHGlobal Mumbai 2026. MIT licensed.</p>
+      </div>
+      <div class="foot-cols">
+        <div><b>Product</b><a href="../scan/">Scan an address</a><a href="../how/">How it works</a><a href="../registry/">Leak registry</a><a href="../demo/">Demo dApp</a></div>
+        <div><b>Teams</b><a href="../teams/">Audit your dApp</a><a href="https://github.com/Arun5768/privacy-xray#crops">CROPS</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Field test</a></div>
+        <div><b>Code</b><a href="https://github.com/Arun5768/privacy-xray">GitHub</a><a href="../privacy-xray-extension.zip" download>Download</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/LICENSE">License</a></div>
+      </div>
+    </div>
+    <div class="wrap foot-note">No third-party fonts, scripts or trackers on this site. The Scan page contacts public endpoints only when you press Run, and says which.</div>
   </footer>
+
+  <script src="../assets/app.js"></script>
   <script src="registry.js"></script>
 </body>
 </html>

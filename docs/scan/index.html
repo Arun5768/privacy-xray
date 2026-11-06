@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scan an address · 0xRay</title>
+  <meta name="description" content="Paste a wallet address or ENS name and see what anyone who gets it learns: names, linked socials, balances and activity across chains." />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="../favicon.png" />
+  <link rel="stylesheet" href="../assets/app.css" />
+</head>
+<body data-page="scan">
+  <!-- Live status: reads only this browser's own environment; nothing is sent anywhere. -->
+  <div id="live" class="live idle"><span class="dot"></span><span id="liveText">Scanning this browser…</span></div>
+
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="logo" href="../" aria-label="0xRay home">
+        <svg class="eye" viewBox="0 0 128 128" aria-hidden="true">
+          <rect width="128" height="128" rx="30" fill="#0b0b12" />
+          <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#14141f" stroke="#f5f3ff" stroke-width="8" stroke-linejoin="round" />
+          <g class="pupil"><circle cx="64" cy="64" r="22" fill="#3cf0d4" /><circle cx="64" cy="64" r="9" fill="#0b0b12" /><circle cx="70" cy="57" r="4" fill="#fff" /></g>
+        </svg>
+        <span class="wordmark">0x<em>Ray</em></span>
+      </a>
+      <nav aria-label="Main">
+        <a data-nav="scan" href="../scan/">Scan</a>
+        <a data-nav="how" href="../how/">How it works</a>
+        <a data-nav="registry" href="../registry/">Registry</a>
+        <a data-nav="teams" href="../teams/">For teams</a>
+        <a href="../demo/">Demo</a>
+      </nav>
+      <a class="btn btn-lime small magnetic" href="../privacy-xray-extension.zip" download>Get 0xRay</a>
+    </div>
+  </header>
+
+  <main>
+<section class="hero scan-hero">
+      <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="wrap">
+        <p class="kicker"><i></i>Exposure report · 10 seconds</p>
+        <h1 class="display words">What does your address <em class="pink">give away?</em></h1>
+        <p class="lede">The moment a tracker gets your wallet address, it can look all of this up. So can we. Paste an address or ENS name and see it the way they do.</p>
+        <form id="form" class="field scan-field">
+          <input id="addr" placeholder="0x… or name.eth" autocomplete="off" spellcheck="false" aria-label="Wallet address or ENS name" required />
+          <button class="btn btn-pink magnetic" type="submit">Run report <span class="arrow">→</span></button>
+        </form>
+        <p class="consent">
+          <b>What Run does:</b> read-only lookups on PublicNode's public RPCs (Ethereum, Base, Arbitrum, Optimism, Polygon) and Arkiv's public endpoint, so those services see the address you scan. Nothing is stored. Rather not? <button id="sample" class="linkish" type="button">Try it on vitalik.eth</button>, or use the extension, which makes no requests at all.
+        </p>
+        <p id="preNote" class="consent pre" hidden>Address filled in from the homepage. Press <b>Run report</b> when you're ready.</p>
+      </div>
+    </section>
+
+    <section id="report" class="wrap report" hidden>
+      <div class="report-top">
+        <div class="score">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="track" /><circle id="ring" cx="60" cy="60" r="52" class="ring" /></svg>
+          <div class="score-in"><b id="scoreNum">0</b><span>/100 exposure</span></div>
+        </div>
+        <div class="report-head">
+          <p class="kicker"><i></i>Report for <span id="who" class="mono"></span></p>
+          <h2 class="title" id="verdict">Scanning…</h2>
+          <ol id="log" class="log mono" aria-live="polite"></ol>
+        </div>
+      </div>
+      <div class="report-grid">
+        <article id="cIdentity" class="card rcard"></article>
+        <article id="cMoney" class="card rcard"></article>
+        <article id="cActivity" class="card rcard"></article>
+        <article id="cWho" class="card rcard"></article>
+        <article id="cFix" class="card rcard wide"></article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <div class="foot-brand">
+        <span class="wordmark big">0x<em>Ray</em></span>
+        <p>See who's watching your wallet. Built at ETHGlobal Mumbai 2026. MIT licensed.</p>
+      </div>
+      <div class="foot-cols">
+        <div><b>Product</b><a href="../scan/">Scan an address</a><a href="../how/">How it works</a><a href="../registry/">Leak registry</a><a href="../demo/">Demo dApp</a></div>
+        <div><b>Teams</b><a href="../teams/">Audit your dApp</a><a href="https://github.com/Arun5768/privacy-xray#crops">CROPS</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Field test</a></div>
+        <div><b>Code</b><a href="https://github.com/Arun5768/privacy-xray">GitHub</a><a href="../privacy-xray-extension.zip" download>Download</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/LICENSE">License</a></div>
+      </div>
+    </div>
+    <div class="wrap foot-note">No third-party fonts, scripts or trackers on this site. The Scan page contacts public endpoints only when you press Run, and says which.</div>
+  </footer>
+
+  <script src="../assets/app.js"></script>
+  <script src="scan.js"></script>
+</body>
+</html>

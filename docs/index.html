@@ -5,186 +5,189 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>0xRay · See who's watching your wallet</title>
   <meta name="description" content="0xRay shows which companies a crypto app sends your wallet address to, with proof, and blocks it in one click. Runs entirely on your device." />
-  <link rel="icon" href="favicon.png" />
-  <link rel="stylesheet" href="site.css" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="./favicon.png" />
+  <link rel="stylesheet" href="./assets/app.css" />
 </head>
-<body>
-  <!-- Live status: reads only this page's own environment; nothing is sent anywhere. -->
+<body data-page="home">
+  <!-- Live status: reads only this browser's own environment; nothing is sent anywhere. -->
   <div id="live" class="live idle"><span class="dot"></span><span id="liveText">Scanning this browser…</span></div>
-  <div class="grid-bg" aria-hidden="true"></div>
 
-  <header class="nav wrap">
-    <a class="logo" href="./" aria-label="0xRay home">
-      <svg class="eye" viewBox="0 0 128 128" aria-hidden="true">
-        <rect width="128" height="128" rx="30" fill="#07090d" />
-        <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#0e1218" stroke="#e8f1f2" stroke-width="8" stroke-linejoin="round" />
-        <g class="pupil"><circle cx="64" cy="64" r="22" fill="#39f0d0" /><circle cx="64" cy="64" r="9" fill="#07090d" /><circle cx="70" cy="57" r="4" fill="#fff" /></g>
-      </svg>
-      <span class="wordmark"><b>0x</b>Ray</span>
-    </a>
-    <nav>
-      <a href="#how">How it works</a>
-      <a href="registry/">Registry</a>
-      <a href="#teams">For teams</a>
-      <a href="#trust">Trust</a>
-      <a href="https://github.com/Arun5768/privacy-xray">GitHub</a>
-      <a class="btn small" href="privacy-xray-extension.zip" download>Download</a>
-    </nav>
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="logo" href="./" aria-label="0xRay home">
+        <svg class="eye" viewBox="0 0 128 128" aria-hidden="true">
+          <rect width="128" height="128" rx="30" fill="#0b0b12" />
+          <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#14141f" stroke="#f5f3ff" stroke-width="8" stroke-linejoin="round" />
+          <g class="pupil"><circle cx="64" cy="64" r="22" fill="#3cf0d4" /><circle cx="64" cy="64" r="9" fill="#0b0b12" /><circle cx="70" cy="57" r="4" fill="#fff" /></g>
+        </svg>
+        <span class="wordmark">0x<em>Ray</em></span>
+      </a>
+      <nav aria-label="Main">
+        <a data-nav="scan" href="./scan/">Scan</a>
+        <a data-nav="how" href="./how/">How it works</a>
+        <a data-nav="registry" href="./registry/">Registry</a>
+        <a data-nav="teams" href="./teams/">For teams</a>
+        <a href="./demo/">Demo</a>
+      </nav>
+      <a class="btn btn-lime small magnetic" href="./privacy-xray-extension.zip" download>Get 0xRay</a>
+    </div>
   </header>
 
   <main>
-    <section class="hero wrap">
-      <div class="hero-copy">
-        <p class="kicker">Browser extension · open source · no servers</p>
-        <h1 class="words">See who's watching <span class="ray">your wallet.</span></h1>
-        <p class="ticker">Right now your address could be going to <span class="type" id="type">Google Analytics</span><span class="caret">▍</span></p>
-        <p class="lede">Crypto apps quietly send your wallet address to analytics and marketing companies. 0xRay shows you exactly who receives it, with proof, and stops it in one click.</p>
-        <div class="cta">
-          <a class="btn primary" href="privacy-xray-extension.zip" download>Download 0xRay</a>
-          <a class="btn ghost" href="demo/">Try the live demo →</a>
+<section class="hero">
+      <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="wrap hero-in">
+        <div class="hero-copy">
+          <p class="kicker"><i></i>Browser extension · open source · no servers</p>
+          <h1 class="display words">See who's <em class="lime">watching</em> your wallet.</h1>
+          <p class="ticker mono">Right now your address could be going to <b class="pink" data-type="Google Analytics|an ad network|a marketing SDK|your RPC provider|a data broker">Google Analytics</b><span class="caret">▌</span></p>
+          <form class="field hero-scan" action="scan/" method="get">
+            <input name="a" placeholder="Paste an address or name.eth" autocomplete="off" spellcheck="false" aria-label="Wallet address or ENS name" required />
+            <button class="btn btn-lime magnetic" type="submit">Scan it <span class="arrow">→</span></button>
+          </form>
+          <p class="hint">See what anyone who gets your address learns, in 10 seconds. Or <a href="privacy-xray-extension.zip" download>get the extension</a> to catch leaks live.</p>
         </div>
-        <p class="fine">Chrome, Brave and other Chromium browsers · <a href="#install">2-minute install</a></p>
-      </div>
 
-      <!-- The concept: a normal dApp, and the same dApp under the X-ray. -->
-      <figure class="scanner" aria-label="Animation: an X-ray beam sweeps across a dApp and reveals requests sending your address to other companies">
-        <div class="layer normal">
-          <div class="app-bar"><span></span><span></span><span></span><b>swapdemo.app</b></div>
-          <div class="app-body">
-            <div class="app-title">Swap</div>
-            <div class="field"><span>You pay</span><b>1.0 ETH</b></div>
-            <div class="field"><span>You get</span><b>3,412 USDC</b></div>
-            <div class="app-btn">Connected · 0x5290…9ee7</div>
-            <div class="looks-fine">Looks fine, right?</div>
+        <figure class="scanner tilt" aria-label="Illustration: an X-ray beam sweeps across a dApp and reveals requests sending your address to other companies">
+          <div class="layer normal">
+            <div class="app-bar"><span></span><span></span><span></span><b>swapdemo.app</b></div>
+            <div class="app-body">
+              <div class="app-title">Swap</div>
+              <div class="app-field"><span>You pay</span><b>1.0 ETH</b></div>
+              <div class="app-field"><span>You get</span><b>3,412 USDC</b></div>
+              <div class="app-btn">Connected · 0x5290…9ee7</div>
+              <div class="looks-fine serif">Looks fine, right?</div>
+            </div>
+          </div>
+          <div class="layer xray" aria-hidden="true">
+            <div class="app-bar"><span></span><span></span><span></span><b>swapdemo.app · under 0xRay</b></div>
+            <div class="leaks">
+              <div class="leak"><i>→</i><div><b>analytics.google.com</b><code>?dl=…/address/0x5290…9ee7</code></div><em class="chip pink">plain</em></div>
+              <div class="leak"><i>→</i><div><b>collect.demotrack</b><code>eyJ3YWxsZXQiOiIweDUy…</code></div><em class="chip violet">base64</em></div>
+              <div class="leak"><i>→</i><div><b>api.adnetwork</b><code>uid: d33119ae…</code></div><em class="chip lime">sha256</em></div>
+              <div class="leak"><i>→</i><div><b>rpc provider</b><code>eth_getBalance + your IP</code></div><em class="chip cyan">rpc</em></div>
+            </div>
+          </div>
+          <div class="beam" aria-hidden="true"></div>
+          <figcaption class="mono">Illustration · same page, under the X-ray</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <div class="marquee" aria-label="Kinds of companies that receive wallet addresses">
+      <div class="marquee-track">
+        <span>Analytics</span><span>Marketing pixels</span><span>Ad networks</span><span>RPC providers</span><span>Error trackers</span><span>Session replay</span><span>Attribution SDKs</span><span>Data brokers</span>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="stats">
+          <div class="stat reveal"><b><span data-count="211">211</span></b><p>of 1,572 dApps leaked users' wallet addresses to third parties.<sup><a href="#src">1</a></sup></p></div>
+          <div class="stat reveal" style="--d:.08s"><b class="pink"><span data-count="22">22</span><small>/36</small></b><p>browser wallets kept exposing addresses after the user disconnected.<sup><a href="#src">2</a></sup></p></div>
+          <div class="stat reveal" style="--d:.16s"><b class="lime">$<span data-count="30">30</span>M+</b><p>taken in physical "wrench attacks" on crypto holders in H1 2026.<sup><a href="#src">3</a></sup></p></div>
+          <div class="stat reveal" style="--d:.24s"><b class="cyan">GDPR</b><p>A linkable wallet address is personal data, even when hashed.<sup><a href="#src">4</a></sup></p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section paper">
+      <div class="wrap">
+        <p class="kicker reveal"><i></i>The toolkit</p>
+        <h2 class="title reveal">Four ways to stop being <em>watched.</em></h2>
+        <div class="cards tools">
+          <a class="card tilt reveal tool t-ext" href="#install">
+            <span class="chip lime">Extension</span>
+            <h3>Live leak detector</h3>
+            <p>Checks every request a page sends to another company for your address, even hashed or Base64-encoded. Proof for every finding. One switch to block.</p>
+            <span class="go">Get it →</span>
+          </a>
+          <a class="card tilt reveal tool t-agent" style="--d:.08s" href="how/#agent">
+            <span class="chip violet">Agent</span>
+            <h3>Privacy audit agent</h3>
+            <p>The extension visits popular crypto sites for you with a decoy address and reports which ones hand it to trackers. Your real address never leaves your device.</p>
+            <span class="go">See how →</span>
+          </a>
+          <a class="card tilt reveal tool t-scan" style="--d:.16s" href="scan/">
+            <span class="chip pink">Scan</span>
+            <h3>Exposure report</h3>
+            <p>Paste any address and see what a tracker learns the moment it gets it: names, linked socials, balances, activity across chains.</p>
+            <span class="go">Scan now →</span>
+          </a>
+          <a class="card tilt reveal tool t-reg" style="--d:.24s" href="registry/">
+            <span class="chip cyan">Registry</span>
+            <h3>Public leak registry</h3>
+            <p>Look a site up before you connect. Observations live on Arkiv: public, verifiable, and they expire after 30 days so they stay current.</p>
+            <span class="go">Look up a site →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap seen">
+        <div class="reveal">
+          <p class="kicker"><i></i>Field test · real sites</p>
+          <h2 class="title">We looked. <em class="pink">They</em> were watching.</h2>
+          <p class="lede">We generated a random address that belongs to nobody and opened its page on popular explorers, with 0xRay watching.</p>
+        </div>
+        <div class="seen-list">
+          <div class="seen-row reveal"><b>Etherscan</b><span>→ Google Analytics, <code>req.adx.ws</code></span><em class="chip pink">delivered</em></div>
+          <div class="seen-row reveal" style="--d:.08s"><b>Blockscout</b><span>→ Google Analytics</span><em class="chip pink">delivered</em></div>
+          <div class="seen-row reveal" style="--d:.16s"><b>DeBank · Arkham · OKLink</b><span>No third-party recipients</span><em class="chip lime">clean</em></div>
+          <p class="muted small reveal">Observations, not accusations: an address in a URL is normal for explorers. <a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Method and full results</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section install-band" id="install">
+      <div class="wrap">
+        <div class="band reveal">
+          <div>
+            <p class="kicker"><i></i>Two minutes · no account</p>
+            <h2 class="title">Put on the <em class="lime">X-ray glasses.</em></h2>
+            <ol class="steps-inline">
+              <li><b>01</b>Download and unzip.</li>
+              <li><b>02</b>Open <code>chrome://extensions</code>, turn on Developer mode.</li>
+              <li><b>03</b>Load unpacked. A guided setup takes it from there.</li>
+            </ol>
+          </div>
+          <div class="band-cta">
+            <a class="btn btn-lime magnetic" href="privacy-xray-extension.zip" download>Download 0xRay <span class="arrow">→</span></a>
+            <a class="btn btn-ghost" href="demo/">Try the demo dApp</a>
           </div>
         </div>
-        <div class="layer xray" aria-hidden="true">
-          <div class="app-bar"><span></span><span></span><span></span><b>swapdemo.app</b></div>
-          <div class="leaks">
-            <div class="leak"><i>→</i><div><b>analytics.google.com</b><code>?dl=…/address/0x5290…9ee7</code></div><em>plain</em></div>
-            <div class="leak"><i>→</i><div><b>collect.demotrack</b><code>eyJ3YWxsZXQiOiIweDUy…</code></div><em>base64</em></div>
-            <div class="leak"><i>→</i><div><b>api.adnetwork</b><code>uid: d33119ae…</code></div><em>sha256</em></div>
-            <div class="leak rpc"><i>→</i><div><b>rpc provider</b><code>eth_getBalance 0x5290…9ee7 + your IP</code></div><em>rpc</em></div>
-          </div>
-        </div>
-        <div class="beam" aria-hidden="true"></div>
-        <figcaption>Illustration: the same page, under the X-ray.</figcaption>
-      </figure>
-    </section>
-
-    <section class="wrap check-wrap reveal">
-      <form class="check" action="registry/" method="get">
-        <label for="checkSite">Check a site before you connect</label>
-        <div class="check-row">
-          <input id="checkSite" name="site" placeholder="etherscan.io" autocomplete="off" spellcheck="false" required />
-          <button class="btn primary small" type="submit">Scan registry</button>
-        </div>
-        <span class="fine">Looks the site up in our public leak registry, read live from Arkiv.</span>
-      </form>
-    </section>
-
-    <section class="facts wrap reveal" aria-label="Why it matters">
-      <div class="fact"><b data-count="211">211</b><span>of 1,572 dApps leaked users' wallet addresses to third parties<sup><a href="#src1">1</a></sup></span></div>
-      <div class="fact"><b><span data-count="22">22</span>/36</b><span>browser wallets kept exposing addresses after the user disconnected<sup><a href="#src2">2</a></sup></span></div>
-      <div class="fact"><b>$<span data-count="30">30</span>M+</b><span>taken in physical "wrench attacks" on crypto holders in H1 2026<sup><a href="#src3">3</a></sup></span></div>
-      <div class="fact"><b>GDPR</b><span>a linkable wallet address is personal data, even when hashed<sup><a href="#src4">4</a></sup></span></div>
-    </section>
-
-    <section class="wrap section seen reveal">
-      <p class="kicker">Field test</p>
-      <h2>What we saw on real sites</h2>
-      <p class="sub">We generated a random address that belongs to nobody and opened its page on popular explorers and portfolio trackers, with 0xRay watching.</p>
-      <div class="seen-grid">
-        <div class="seen-card bad"><b>Etherscan</b><span>Delivered to <strong>Google Analytics</strong> and an ad host, <code>req.adx.ws</code></span></div>
-        <div class="seen-card bad"><b>Blockscout</b><span>Delivered to <strong>Google Analytics</strong></span></div>
-        <div class="seen-card ok"><b>DeBank · Arkham · OKLink</b><span>No third-party recipients observed</span></div>
-      </div>
-      <p class="fine">Observations, not accusations: an address in a URL is normal for explorers. <a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Full results and method</a>, reproducible with one command. Look any site up in the <a href="registry/">leak registry</a>.</p>
-    </section>
-
-    <section id="how" class="wrap section">
-      <p class="kicker reveal">How it works</p>
-      <h2 class="reveal">Three steps. Zero setup.</h2>
-      <ol class="steps">
-        <li class="reveal"><span class="n">01</span><h3>Connect as usual</h3><p>Use any dApp. When your wallet hands the page your address, 0xRay learns it, on your device only. Or paste an address to watch.</p><img src="img/popup-first-run.png" width="400" height="600" loading="lazy" alt="First run: the popup explains the three steps and waits for an address" /></li>
-        <li class="reveal"><span class="n">02</span><h3>See every leak, with proof</h3><p>Every request to another company is checked, including disguised forms: checksummed, Base64, URL-encoded, and SHA-256, Keccak, SHA-1 or MD5 hashes.</p><img src="img/popup-leaks.png" width="400" height="1004" loading="lazy" alt="Leaks found: requests checked, recipients, and proof for each leak" /></li>
-        <li class="reveal"><span class="n">03</span><h3>Stop it in one click</h3><p>Turn on <b>Protect</b> and requests carrying your address are stopped before they leave the page. RPC providers are never blocked, so dApps keep working.</p><img src="img/popup-protected.png" width="400" height="1040" loading="lazy" alt="Protect on: all three attempts blocked, grade A" /></li>
-      </ol>
-    </section>
-
-    <section class="wrap section split reveal">
-      <div>
-        <p class="kicker">The gap</p>
-        <h2>Why wallets can't fix this</h2>
-        <p class="sub">A hardware wallet protects your keys from theft. It does nothing about who learns your address. Once you connect, the website's own code can send your address anywhere: analytics, marketing pixels, error trackers. That code runs outside your wallet, so only something that watches the page's traffic can see it.</p>
-      </div>
-      <div class="catch">
-        <h3>What 0xRay catches</h3>
-        <ul>
-          <li><code>?wallet=0x…</code> in a URL</li>
-          <li>Base64 JSON in a beacon body</li>
-          <li>"Anonymised" hashes of your address</li>
-          <li>Cookies and Referer headers</li>
-          <li>WebSocket messages</li>
-          <li>RPC calls that pair your address with your IP</li>
-        </ul>
       </div>
     </section>
 
-    <section id="teams" class="wrap section reveal">
-      <div class="band">
-        <p class="kicker">For dApp teams</p>
-        <h2>Find the leak before your users do.</h2>
-        <p>Most teams don't know their analytics script collects wallet addresses. Under the EDPB's July 2026 blockchain guidelines, a linkable wallet address is personal data, and hashing it doesn't change that. Run 0xRay on your own app and export an <b>evidence report</b> (Markdown or JSON) listing every recipient, encoding and responsible script.</p>
-      </div>
-    </section>
-
-    <section id="trust" class="wrap section">
-      <p class="kicker reveal">Trust</p>
-      <h2 class="reveal">Built the way a privacy tool should be.</h2>
-      <div class="crops">
-        <div class="reveal"><b>CR</b><h3>Censorship resistant</h3><p>No server, domain or account to take away. It runs from the code on your machine.</p></div>
-        <div class="reveal"><b>O</b><h3>Open source</h3><p>MIT licensed. Builds from the repo with one command. Read every line.</p></div>
-        <div class="reveal"><b>P</b><h3>Private</h3><p>All analysis happens on your device and the extension makes no network requests. Watched addresses live in browser memory only; saved findings are redacted.</p></div>
-        <div class="reveal"><b>S</b><h3>Secure</h3><p>Never asks for or touches keys or seed phrases. Read-only observation; blocking is off until you turn it on.</p></div>
-      </div>
-      <div class="limits reveal">
-        <h3>Honest limitations</h3>
-        <ul>
-          <li>It sees what leaves your browser, not what a dApp's server forwards to others later.</li>
-          <li>Custom or encrypted encodings can slip through. Only full-length matches count, so findings are evidence, not guesses.</li>
-          <li>Requests from web workers, and Blob or stream bodies, are checked at the network layer only and can't be stopped before the first send.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="install" class="wrap section reveal">
-      <p class="kicker">Install</p>
-      <h2>Two minutes, no account.</h2>
-      <ol class="install">
-        <li><a href="privacy-xray-extension.zip" download>Download 0xRay</a> and unzip it.</li>
-        <li>Open <code>chrome://extensions</code> or <code>brave://extensions</code> and switch on <b>Developer mode</b>.</li>
-        <li>Click <b>Load unpacked</b> and choose the unzipped folder. A welcome page walks you through the rest.</li>
-      </ol>
-      <p class="fine">Prefer to build it yourself? <code>git clone https://github.com/Arun5768/privacy-xray && npm install && npm run build</code>, then load <code>dist</code>.</p>
-    </section>
-
-    <section class="wrap section sources">
-      <h2>Sources</h2>
+    <section class="wrap sources" id="src">
       <ol>
-        <li id="src1">Torres et al., "Is Your Wallet Snitching On You?", USENIX Security 2023. <a href="https://www.usenix.org/system/files/usenixsecurity23-torres.pdf">usenix.org</a></li>
-        <li id="src2">"The Masks We (Think We) Wear: Privacy Threats of Browser-Extension Wallets in the Web3 Ecosystem", 2026. <a href="https://arxiv.org/html/2607.06141v1">arxiv.org</a></li>
-        <li id="src3">Chainalysis, "Violent Wrench Attacks Targeting Crypto Holders", 2026. <a href="https://www.chainalysis.com/blog/violent-crypto-wrench-attacks-2026/">chainalysis.com</a></li>
-        <li id="src4">EDPB Guidelines 02/2025 on processing of personal data through blockchain technologies, v2.0. <a href="https://www.edpb.europa.eu/documents/guideline/guidelines-022025-on-processing-of-personal-data-through-blockchain_en">edpb.europa.eu</a></li>
+        <li>Torres et al., "Is Your Wallet Snitching On You?", USENIX Security 2023. <a href="https://www.usenix.org/system/files/usenixsecurity23-torres.pdf">usenix.org</a></li>
+        <li>"The Masks We (Think We) Wear: Privacy Threats of Browser-Extension Wallets in the Web3 Ecosystem", 2026. <a href="https://arxiv.org/html/2607.06141v1">arxiv.org</a></li>
+        <li>Chainalysis, "Violent Wrench Attacks Targeting Crypto Holders", 2026. <a href="https://www.chainalysis.com/blog/violent-crypto-wrench-attacks-2026/">chainalysis.com</a></li>
+        <li>EDPB Guidelines 02/2025 on blockchain, v2.0, July 2026. <a href="https://www.edpb.europa.eu/documents/guideline/guidelines-022025-on-processing-of-personal-data-through-blockchain_en">edpb.europa.eu</a></li>
       </ol>
     </section>
+
   </main>
 
-  <footer class="wrap foot">
-    <span>0xRay · built at ETHGlobal Mumbai 2026 · MIT</span>
-    <span>This page loads no fonts, scripts or trackers from anyone else.</span>
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <div class="foot-brand">
+        <span class="wordmark big">0x<em>Ray</em></span>
+        <p>See who's watching your wallet. Built at ETHGlobal Mumbai 2026. MIT licensed.</p>
+      </div>
+      <div class="foot-cols">
+        <div><b>Product</b><a href="./scan/">Scan an address</a><a href="./how/">How it works</a><a href="./registry/">Leak registry</a><a href="./demo/">Demo dApp</a></div>
+        <div><b>Teams</b><a href="./teams/">Audit your dApp</a><a href="https://github.com/Arun5768/privacy-xray#crops">CROPS</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Field test</a></div>
+        <div><b>Code</b><a href="https://github.com/Arun5768/privacy-xray">GitHub</a><a href="./privacy-xray-extension.zip" download>Download</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/LICENSE">License</a></div>
+      </div>
+    </div>
+    <div class="wrap foot-note">No third-party fonts, scripts or trackers on this site. The Scan page contacts public endpoints only when you press Run, and says which.</div>
   </footer>
 
-  <script src="site.js"></script>
+  <script src="./assets/app.js"></script>
+
 </body>
 </html>

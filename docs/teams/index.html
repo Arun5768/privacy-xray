@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For dApp teams · 0xRay</title>
+  <meta name="description" content="Find out whether your dApp's analytics collects wallet addresses before your users or regulators do. Export an evidence report." />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="../favicon.png" />
+  <link rel="stylesheet" href="../assets/app.css" />
+</head>
+<body data-page="teams">
+  <!-- Live status: reads only this browser's own environment; nothing is sent anywhere. -->
+  <div id="live" class="live idle"><span class="dot"></span><span id="liveText">Scanning this browser…</span></div>
+
+  <header class="nav">
+    <div class="wrap nav-in">
+      <a class="logo" href="../" aria-label="0xRay home">
+        <svg class="eye" viewBox="0 0 128 128" aria-hidden="true">
+          <rect width="128" height="128" rx="30" fill="#0b0b12" />
+          <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#14141f" stroke="#f5f3ff" stroke-width="8" stroke-linejoin="round" />
+          <g class="pupil"><circle cx="64" cy="64" r="22" fill="#3cf0d4" /><circle cx="64" cy="64" r="9" fill="#0b0b12" /><circle cx="70" cy="57" r="4" fill="#fff" /></g>
+        </svg>
+        <span class="wordmark">0x<em>Ray</em></span>
+      </a>
+      <nav aria-label="Main">
+        <a data-nav="scan" href="../scan/">Scan</a>
+        <a data-nav="how" href="../how/">How it works</a>
+        <a data-nav="registry" href="../registry/">Registry</a>
+        <a data-nav="teams" href="../teams/">For teams</a>
+        <a href="../demo/">Demo</a>
+      </nav>
+      <a class="btn btn-lime small magnetic" href="../privacy-xray-extension.zip" download>Get 0xRay</a>
+    </div>
+  </header>
+
+  <main>
+<section class="hero">
+      <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="wrap">
+        <p class="kicker"><i></i>For dApp teams</p>
+        <h1 class="display words">Find the leak before your <em class="orange">users</em> do.</h1>
+        <p class="lede">Most teams don't know their analytics script collects wallet addresses. Under the EDPB's July 2026 blockchain guidelines, a wallet address linkable to a person is personal data, and hashing it doesn't change that.</p>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="cards teams">
+        <div class="card tilt reveal"><span class="big-num lime">1</span><h3>Open your own app</h3><p>Load the extension, connect a test wallet to your dApp, and click through your main flows: connect, swap, sign in.</p></div>
+        <div class="card tilt reveal" style="--d:.08s"><span class="big-num pink">2</span><h3>See every recipient</h3><p>The popup lists every company that received the address, where it was hidden, how it was encoded and which script sent it.</p></div>
+        <div class="card tilt reveal" style="--d:.16s"><span class="big-num cyan">3</span><h3>Export the evidence</h3><p>Download a Markdown or JSON report with every finding, ready for your engineers or your data-protection lead.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap report-sample reveal">
+        <div>
+          <p class="kicker"><i></i>Evidence report</p>
+          <h2 class="title">Not a vibe. <em>A receipt.</em></h2>
+          <p class="lede">Each finding names the request, the field, the encoding and the script responsible, so the fix is obvious: remove the identify call, stop sending the address, or hash nothing at all.</p>
+        </div>
+        <pre class="mono receipt"><span class="pink"># 0xRay evidence report</span>
+- Page: https://app.example.xyz
+- Leaks: 3 (3 exposed, 0 stopped)
+
+| Recipient          | Where | Encoding          |
+|--------------------|-------|-------------------|
+| collect.tracker.io | query | plain             |
+| collect.tracker.io | body  | base64 → plain    |
+| id.tracker.io      | body  | sha256(lowercase) |
+
+<span class="lime">Sent by script:</span> tracker.io/sdk.js
+<span class="muted">Addresses and hashes are redacted.</span></pre>
+      </div>
+    </section>
+
+    <section class="section paper">
+      <div class="wrap">
+        <div class="band light reveal">
+          <div>
+            <h2 class="title">Try it on the <em>demo dApp</em> first.</h2>
+            <p class="lede">A deliberately leaky dApp: watch 0xRay catch a plain, a Base64 and a hashed leak, then block all three.</p>
+          </div>
+          <div class="band-cta">
+            <a class="btn btn-lime magnetic" href="../demo/">Open the demo <span class="arrow">→</span></a>
+            <a class="btn btn-ghost" href="../privacy-xray-extension.zip" download>Download 0xRay</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <div class="foot-brand">
+        <span class="wordmark big">0x<em>Ray</em></span>
+        <p>See who's watching your wallet. Built at ETHGlobal Mumbai 2026. MIT licensed.</p>
+      </div>
+      <div class="foot-cols">
+        <div><b>Product</b><a href="../scan/">Scan an address</a><a href="../how/">How it works</a><a href="../registry/">Leak registry</a><a href="../demo/">Demo dApp</a></div>
+        <div><b>Teams</b><a href="../teams/">Audit your dApp</a><a href="https://github.com/Arun5768/privacy-xray#crops">CROPS</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Field test</a></div>
+        <div><b>Code</b><a href="https://github.com/Arun5768/privacy-xray">GitHub</a><a href="../privacy-xray-extension.zip" download>Download</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/LICENSE">License</a></div>
+      </div>
+    </div>
+    <div class="wrap foot-note">No third-party fonts, scripts or trackers on this site. The Scan page contacts public endpoints only when you press Run, and says which.</div>
+  </footer>
+
+  <script src="../assets/app.js"></script>
+
+</body>
+</html>

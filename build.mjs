@@ -15,6 +15,9 @@ cpSync('src/icons', 'dist/icons', { recursive: true });
 cpSync('src/icons/logo.svg', 'docs/img/logo.svg');
 cpSync('src/icons/icon-32.png', 'docs/favicon.png');
 
+// Website pages from site/ (layout + pages) into docs/, published by GitHub Pages.
+await import('./scripts/site.mjs');
+
 const options = {
   entryPoints: {
     background: 'src/background.ts',
@@ -30,10 +33,10 @@ const options = {
   logLevel: 'info',
 };
 
-// Website registry page (reads from Arkiv); published from docs/ by GitHub Pages.
+// Website scripts: the registry (reads Arkiv) and the exposure scan (reads public RPCs).
 const site = {
-  entryPoints: { registry: 'docs/registry/registry.ts' },
-  outdir: 'docs/registry',
+  entryPoints: { 'registry/registry': 'site/registry.ts', 'scan/scan': 'site/scan.ts' },
+  outdir: 'docs',
   bundle: true,
   format: 'iife',
   target: 'es2022',
