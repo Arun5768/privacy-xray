@@ -14,7 +14,7 @@ function esc(s: string | undefined): string {
 const exposed = (l: Leak) => !l.blocked && l.outcome !== 'blocked-by-browser';
 
 function statusText(l: Leak): string {
-  if (l.blocked) return 'blocked by Privacy X-Ray before sending';
+  if (l.blocked) return 'blocked by 0xRay before sending';
   if (l.outcome === 'blocked-by-browser') return 'attempted; blocked by your browser (e.g. Shields, ad blocker)';
   if (l.outcome === 'delivered') return 'delivered to the recipient';
   if (l.outcome === 'failed') return 'left the page; delivery failed (network error)';
@@ -69,7 +69,7 @@ function render() {
   const act = $('activity');
   if (addresses.length) {
     const carried = new Set(leaks.map((l) => l.recipientHost)).size;
-    act.innerHTML = `<b>${view.checked}</b> request${view.checked === 1 ? '' : 's'} to <b>${view.hosts.length}</b> other compan${view.hosts.length === 1 ? 'y' : 'ies'} checked on this page · <b>${carried}</b> carried your address`
+    act.innerHTML = `<b>${view.checked}</b> request${view.checked === 1 ? '' : 's'} to <b>${view.hosts.length}</b> other compan${view.hosts.length === 1 ? "y" : "ies"} checked on this page · <b>${carried}</b> targeted your address`
       + (view.hosts.length ? `<details data-key="hosts"><summary>Companies this page contacted</summary><div class="hosts">${view.hosts.map((h) => `<code>${esc(h)}</code>`).join(' ')}</div></details>` : '');
     act.hidden = false;
   } else {
@@ -80,7 +80,7 @@ function render() {
   if (!addresses.length) {
     list.innerHTML = `<div class="empty"><strong>How it works</strong>
       <ol class="how">
-        <li><b>Connect your wallet</b> on this site as usual. X-Ray learns your address on this device only.</li>
+        <li><b>Connect your wallet</b> on this site as usual. 0xRay learns your address on this device only.</li>
         <li>Or <b>paste an address</b> below to watch it.</li>
         <li>Keep using the site. Every request to another company is checked, and anything carrying your address shows up here with proof.</li>
       </ol></div>`;
@@ -147,7 +147,7 @@ async function refresh() {
 function report(): string {
   const { leaks, pageUrl } = view;
   const lines = [
-    `# Privacy X-Ray evidence report`,
+    `# 0xRay evidence report`,
     ``,
     `- Page: ${pageUrl}`,
     `- Extension version: ${chrome.runtime.getManifest().version}`,
@@ -182,7 +182,7 @@ function reportJson(): string {
   const { leaks, pageUrl } = view;
   return JSON.stringify(
     {
-      tool: 'Privacy X-Ray',
+      tool: '0xRay',
       version: chrome.runtime.getManifest().version,
       page: pageUrl,
       site: leaks[0]?.pageSite ?? (pageUrl ? new URL(pageUrl).host : ''),
@@ -202,7 +202,7 @@ function save(text: string, type: string, ext: string) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   const host = view.pageUrl ? new URL(view.pageUrl).host.replace(/[^a-z0-9.-]/gi, '_') : 'page';
-  a.download = `privacy-xray-${host}-${Date.now()}.${ext}`;
+  a.download = `0xray-${host}-${Date.now()}.${ext}`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
