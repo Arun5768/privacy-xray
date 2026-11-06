@@ -6,11 +6,8 @@ import { and, desc, eq, gt } from '@arkiv-network/sdk/query';
 import { u64 } from '@arkiv-network/sdk/schema';
 import { http } from 'viem';
 import { getDomain } from 'tldts';
-import { Observation } from '../../src/shared/arkiv.ts';
+import { Observation, PUBLISHER } from '../src/shared/arkiv.ts';
 
-// Observations published by the 0xRay field survey. Anyone can write
-// entities with this schema, so the page only trusts this publisher by default.
-export const PUBLISHER = '0x6D0622258Fdb25b8E7989AbC3F7D71D82dd65E09';
 
 const client = createPublicClient({ chain: rabdi({ accessKey: '' }), transport: http() });
 const $ = (id: string) => document.getElementById(id)!;

@@ -1,0 +1,24 @@
+<!-- {"title": "Leak registry · 0xRay", "description": "Look up which companies a crypto site was observed sending wallet addresses to. Read live from Arkiv.", "path": "registry/", "page": "registry", "scripts": ["registry.js"]} -->
+    <section class="hero">
+      <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="wrap">
+        <p class="kicker"><i></i>Public registry · stored on Arkiv</p>
+        <h1 class="display words">Check a site <em class="cyan">before</em> you connect.</h1>
+        <p class="lede">Which third parties did a crypto site send a wallet address to? Every row is read live from the Arkiv network, not from our server, and expires after 30 days, so it only shows recent behaviour.</p>
+        <form id="form" class="field scan-field">
+          <input id="site" placeholder="etherscan.io" autocomplete="off" spellcheck="false" aria-label="Site to look up" />
+          <button class="btn btn-lime magnetic" type="submit">Look up <span class="arrow">→</span></button>
+        </form>
+        <p id="status" class="consent mono"></p>
+      </div>
+    </section>
+
+    <section class="wrap reg">
+      <h2 id="heading" class="title"></h2>
+      <div id="results" class="table-wrap"></div>
+      <div class="cards reg-about">
+        <div class="card reveal"><span class="chip cyan">Source</span><h3>Field survey</h3><p>A script opens each site for a random address that belongs to nobody and records which third parties receive it. No wallet address is ever published.</p></div>
+        <div class="card reveal" style="--d:.08s"><span class="chip violet">Trust</span><h3>Only our publisher</h3><p>Anyone can write entities with this schema, so this page shows only those from the survey account <code id="publisher" class="mono"></code>.</p></div>
+        <div class="card reveal" style="--d:.16s"><span class="chip lime">Privacy</span><h3>Extension stays offline</h3><p>The browser extension never contacts Arkiv. This page does, from your browser, using Arkiv's public endpoint. Observations are not accusations.</p></div>
+      </div>
+    </section>

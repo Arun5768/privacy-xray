@@ -1,0 +1,66 @@
+<!-- {"title": "How it works · 0xRay", "description": "How 0xRay finds your wallet address in outgoing requests, proves it, blocks it, and audits sites for you with a decoy.", "path": "how/", "page": "how"} -->
+    <section class="hero">
+      <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="wrap">
+        <p class="kicker"><i></i>How it works</p>
+        <h1 class="display words">Your wallet guards your keys. <em class="lime">Nothing</em> guards your address.</h1>
+        <p class="lede">Once you connect, the website's own code can send your address anywhere: analytics, ad pixels, error trackers. That code runs outside your wallet, so only something that watches the page's traffic can see it. That's 0xRay.</p>
+      </div>
+    </section>
+
+    <section class="wrap flow">
+      <div class="flow-step reveal">
+        <span class="big-num lime">01</span>
+        <div><h2 class="title">It learns your address. <em>Locally.</em></h2><p class="lede">When your wallet hands a page your address, 0xRay notices, on your device only. Or paste an address to watch. It precomputes every disguise: checksummed, without <code>0x</code>, URL-encoded, Base64, and SHA-256, Keccak, SHA-1 and MD5 hashes.</p></div>
+        <img src="../img/popup-first-run.png" width="400" height="600" loading="lazy" alt="0xRay first-run popup" />
+      </div>
+      <div class="flow-step reveal">
+        <span class="big-num pink">02</span>
+        <div><h2 class="title">It checks every request. <em>With proof.</em></h2><p class="lede">Every request to another company is scanned: URL, body, cookies, Referer headers and WebSocket messages. Each finding shows who got it, where it was hidden, how it was encoded, which script sent it, and whether it was actually delivered.</p></div>
+        <img src="../img/popup-leaks.png" width="400" height="1004" loading="lazy" alt="0xRay popup showing three leaks with proof" />
+      </div>
+      <div class="flow-step reveal">
+        <span class="big-num cyan">03</span>
+        <div><h2 class="title">One switch. <em>Blocked.</em></h2><p class="lede">Turn on Protect and requests carrying your address are stopped before they leave the page, then that recipient is blocked. RPC providers are never blocked, so dApps keep working.</p></div>
+        <img src="../img/popup-protected.png" width="400" height="1040" loading="lazy" alt="0xRay popup with Protect on: all attempts blocked" />
+      </div>
+    </section>
+
+    <section class="section paper" id="agent">
+      <div class="wrap agent">
+        <div class="reveal">
+          <p class="kicker"><i></i>The audit agent</p>
+          <h2 class="title">It browses for you, <em>with a decoy.</em></h2>
+          <p class="lede">Press <b>Run audit</b> in the extension. An agent opens popular crypto sites in background tabs, each with a freshly generated decoy address, watches who receives it, closes the tab, and builds a report. You learn which sites would leak <em>your</em> address without ever exposing it.</p>
+        </div>
+        <ol class="agent-steps">
+          <li class="reveal"><b>›</b><span>Generate a random decoy address that belongs to nobody</span></li>
+          <li class="reveal" style="--d:.06s"><b>›</b><span>Open <code>etherscan.io/address/0xdecoy…</code> in a background tab</span></li>
+          <li class="reveal" style="--d:.12s"><b>›</b><span>Watch every outgoing request for 10 seconds</span></li>
+          <li class="reveal" style="--d:.18s"><b>›</b><span>Record recipients, encodings and outcomes; close the tab</span></li>
+          <li class="reveal" style="--d:.24s"><b>›</b><span>Repeat for 9 sites, then show the report</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <p class="kicker reveal"><i></i>Trust</p>
+        <h2 class="title reveal">Built the way a privacy tool <em>should</em> be.</h2>
+        <div class="cards crops">
+          <div class="card tilt reveal"><b class="crop lime">CR</b><h3>Censorship resistant</h3><p>No server, domain or account to take away. It runs from the code on your machine.</p></div>
+          <div class="card tilt reveal" style="--d:.06s"><b class="crop pink">O</b><h3>Open source</h3><p>MIT licensed. Builds from the repo with one command. Read every line.</p></div>
+          <div class="card tilt reveal" style="--d:.12s"><b class="crop cyan">P</b><h3>Private</h3><p>Analysis happens on your device; the extension makes no network requests of its own. Saved findings are redacted.</p></div>
+          <div class="card tilt reveal" style="--d:.18s"><b class="crop violet">S</b><h3>Secure</h3><p>Never asks for or touches keys or seed phrases. Read-only; blocking is off until you turn it on.</p></div>
+        </div>
+        <div class="limits reveal">
+          <h3>Honest limitations</h3>
+          <ul>
+            <li>It sees what leaves your browser, not what a dApp's server forwards to others later.</li>
+            <li>Custom or encrypted encodings can slip through. Only full-length matches count, so findings are evidence, not guesses.</li>
+            <li>Requests from web workers, and Blob or stream bodies, are checked at the network layer only and can't be stopped before the first send.</li>
+            <li>The audit agent opens real pages in background tabs; those sites see an ordinary visit for a random decoy address.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
