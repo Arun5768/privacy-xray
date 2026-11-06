@@ -78,12 +78,16 @@ function render() {
             </div>`,
           )
           .join('');
+        const hint =
+          first.category === 'rpc'
+            ? `<div class="hint">Your RPC provider can link this address to your IP. Protect never blocks RPC (the dApp would break). A private option is the Ethereum Foundation's <a href="https://ethereum.github.io/anon-rpc/" target="_blank" rel="noopener noreferrer">Anon-RPC</a>.</div>`
+            : '';
         return `<details class="recipient">
           <summary>
             <span><div class="who">${esc(first.company)}</div><div class="site">${esc(first.recipientHost)}</div></span>
             <span class="count ${sent ? '' : 'safe'}">${items.length}×</span>
             <div class="tags">${tags}</div>
-          </summary>${proofs}</details>`;
+          </summary>${hint}${proofs}</details>`;
       })
       .join('');
   }
@@ -105,6 +109,7 @@ function report(): string {
     `# Privacy X-Ray evidence report`,
     ``,
     `- Page: ${pageUrl}`,
+    `- Extension version: ${chrome.runtime.getManifest().version}`,
     `- Generated: ${new Date().toISOString()}`,
     `- Grade: ${grade(leaks)}`,
     `- Leaks: ${leaks.length} (${leaks.filter((l) => l.blocked).length} blocked)`,
@@ -132,19 +137,40 @@ function report(): string {
   return lines.join('\n');
 }
 
-function download() {
-  const blob = new Blob([report()], { type: 'text/markdown' });
+function reportJson(): string {
+  const { leaks, pageUrl } = view;
+  return JSON.stringify(
+    {
+      tool: 'Privacy X-Ray',
+      version: chrome.runtime.getManifest().version,
+      page: pageUrl,
+      site: leaks[0]?.pageSite ?? (pageUrl ? new URL(pageUrl).host : ''),
+      generated: new Date().toISOString(),
+      grade: grade(leaks),
+      companies: [...new Set(leaks.map((l) => l.company ?? l.recipientSite))],
+      categories: [...new Set(leaks.map((l) => l.category))],
+      leaks: leaks.map(({ tabId: _tabId, ...rest }) => rest),
+    },
+    null,
+    2,
+  );
+}
+
+function save(text: string, type: string, ext: string) {
+  const blob = new Blob([text], { type });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   const host = view.pageUrl ? new URL(view.pageUrl).host.replace(/[^a-z0-9.-]/gi, '_') : 'page';
-  a.download = `privacy-xray-${host}-${Date.now()}.md`;
+  a.download = `privacy-xray-${host}-${Date.now()}.${ext}`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
 async function main() {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  tabId = tab?.id ?? -1;
+  // ?tab=<id> lets the end-to-end test render the popup for a specific tab.
+  const forced = Number(new URLSearchParams(location.search).get('tab'));
+  const [tab] = forced ? [] : await chrome.tabs.query({ active: true, currentWindow: true });
+  tabId = forced || (tab?.id ?? -1);
   await refresh();
 
   $('protect').addEventListener('change', async (e) => {
@@ -159,7 +185,8 @@ async function main() {
     if (res?.ok) input.value = '';
     await refresh();
   });
-  $('export').addEventListener('click', download);
+  $('export').addEventListener('click', () => save(report(), 'text/markdown', 'md'));
+  $('exportJson').addEventListener('click', () => save(reportJson(), 'application/json', 'json'));
   $('clear').addEventListener('click', async () => {
     await chrome.runtime.sendMessage({ type: 'clearTab', tabId });
     await refresh();

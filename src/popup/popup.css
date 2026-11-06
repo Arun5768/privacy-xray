@@ -113,6 +113,8 @@ main { padding: 0 14px; }
   background: var(--bg);
   border: 1px solid var(--line);
 }
+.hint { margin: 0 12px 8px; padding: 6px 8px; border-left: 3px solid #1d3f8f; background: var(--bg); font-size: 11px; color: var(--muted); }
+.hint a { color: inherit; font-weight: 600; }
 .controls { padding: 6px 14px 4px; }
 .switch {
   display: grid;

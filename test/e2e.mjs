@@ -43,6 +43,13 @@ try {
     console.log('popup leaks:', view.leaks.length, 'addresses:', view.addresses);
     for (const l of view.leaks) console.log(` - ${l.company} | ${l.location} | ${l.transform} | ${l.blocked ? 'BLOCKED' : 'sent'} | by ${l.initiatorScript ?? '?'}\n   ${l.method} ${l.requestUrl}`);
     console.log('raw address present in stored leaks?', JSON.stringify(view.leaks).toLowerCase().includes('52908400098527886e0f7030069857d2e4169ee7'));
+    const shot = await browser.newPage();
+    await shot.setViewport({ width: 400, height: 600, deviceScaleFactor: 2 });
+    await shot.goto(`chrome-extension://${extId}/popup.html?tab=${tabId}`);
+    await shot.evaluate(() => document.querySelector('details')?.setAttribute('open', ''));
+    await sleep(300);
+    await shot.screenshot({ path: `test/e2e-popup-${label.includes('ON') ? 'protect-on' : 'protect-off'}.png`, fullPage: true });
+    await shot.close();
     return { log, view, ms: Date.now() - t0 };
   }
 

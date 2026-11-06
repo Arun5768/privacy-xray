@@ -3,3 +3,4 @@ dist/
 *.zip
 test/e2e-dapp.png
 !docs/privacy-xray-extension.zip
+test/e2e-*.png
