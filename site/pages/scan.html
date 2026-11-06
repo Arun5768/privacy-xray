@@ -1,5 +1,5 @@
 <!-- {"title": "Scan an address · 0xRay", "description": "Paste a wallet address or ENS name and see what anyone who gets it learns: names, linked socials, balances and activity across chains.", "path": "scan/", "page": "scan", "scripts": ["scan.js"]} -->
-    <section class="hero scan-hero">
+    <section class="hero scan-hero" data-tab="scan">
       <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="wrap">
         <p class="kicker"><i></i>Exposure report · 10 seconds</p>
@@ -10,14 +10,14 @@
           <button class="btn btn-pink magnetic" type="submit">Run report <span class="arrow">→</span></button>
         </form>
         <p class="consent">
-          <b>What Run does:</b> read-only lookups on PublicNode's public RPCs (Ethereum, Base, Arbitrum, Optimism, Polygon) and Arkiv's public endpoint, so those services see the address you scan. Nothing is stored. Rather not? <button id="sample" class="linkish" type="button">Try it on vitalik.eth</button>, or use the extension, which makes no requests at all.
+          <b>What Run does:</b> read-only lookups on PublicNode's public RPCs (Ethereum, Base, Arbitrum, Optimism, Polygon) and Arkiv's public endpoint, so those services see the address you scan. Nothing is stored. Rather not? <button id="sample" class="linkish" type="button">Try it on vitalik.eth</button>, or use the extension, which makes no network requests of its own.
         </p>
         <p id="preNote" class="consent pre" hidden>Address filled in from the homepage. Press <b>Run report</b> when you're ready.</p>
       </div>
     </section>
 
-    <section id="report" class="wrap report" hidden>
-      <div class="report-top">
+    <section id="report" class="wrap report" data-tab="report" hidden>
+      <div class="report-top card">
         <div class="score">
           <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="track" /><circle id="ring" cx="60" cy="60" r="52" class="ring" /></svg>
           <div class="score-in"><b id="scoreNum">0</b><span>/100 exposure</span></div>

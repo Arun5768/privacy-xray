@@ -1,5 +1,5 @@
 <!-- {"title": "How it works · 0xRay", "description": "How 0xRay finds your wallet address in outgoing requests, proves it, blocks it, and audits sites for you with a decoy.", "path": "how/", "page": "how"} -->
-    <section class="hero">
+    <section class="hero scan-hero" data-tab="intro">
       <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="wrap">
         <p class="kicker"><i></i>How it works</p>
@@ -8,25 +8,25 @@
       </div>
     </section>
 
-    <section class="wrap flow">
-      <div class="flow-step reveal">
+    <section class="wrap flow" data-tab="flow">
+      <div class="flow-step card reveal">
         <span class="big-num lime">01</span>
         <div><h2 class="title">It learns your address. <em>Locally.</em></h2><p class="lede">When your wallet hands a page your address, 0xRay notices, on your device only. Or paste an address to watch. It precomputes every disguise: checksummed, without <code>0x</code>, URL-encoded, Base64, and SHA-256, Keccak, SHA-1 and MD5 hashes.</p></div>
         <img src="../img/popup-first-run.png" width="400" height="661" loading="lazy" alt="0xRay first-run popup" />
       </div>
-      <div class="flow-step reveal">
+      <div class="flow-step card reveal">
         <span class="big-num pink">02</span>
         <div><h2 class="title">It checks every request. <em>With proof.</em></h2><p class="lede">Every request to another company is scanned: URL, body, cookies, Referer headers and WebSocket messages. Each finding shows who got it, where it was hidden, how it was encoded, which script sent it, and whether it was actually delivered.</p></div>
         <img src="../img/popup-leaks.png" width="400" height="1076" loading="lazy" alt="0xRay popup showing three leaks with proof" />
       </div>
-      <div class="flow-step reveal">
+      <div class="flow-step card reveal">
         <span class="big-num cyan">03</span>
         <div><h2 class="title">One switch. <em>Blocked.</em></h2><p class="lede">Turn on Protect and requests carrying your address are stopped before they leave the page, then that recipient is blocked. RPC providers are never blocked, so dApps keep working.</p></div>
         <img src="../img/popup-protected.png" width="400" height="1112" loading="lazy" alt="0xRay popup with Protect on: all attempts blocked" />
       </div>
     </section>
 
-    <section class="section paper" id="agent">
+    <section class="section paper" id="agent" data-tab="agent">
       <div class="wrap agent">
         <div class="reveal">
           <p class="kicker"><i></i>The audit agent</p>
@@ -43,7 +43,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" data-tab="trust">
       <div class="wrap">
         <p class="kicker reveal"><i></i>Trust</p>
         <h2 class="title reveal">Built the way a privacy tool <em>should</em> be.</h2>
