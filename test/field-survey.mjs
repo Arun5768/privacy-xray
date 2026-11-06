@@ -2,6 +2,7 @@
 // which third parties receive it. Uses a freshly generated random address that
 // belongs to nobody, in a throwaway Brave profile. Writes research/field-test.md.
 import puppeteer from 'puppeteer-core';
+import { getDomain } from 'tldts';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { tmpdir } from 'node:os';
@@ -63,6 +64,26 @@ try {
 } finally {
   await browser.close();
 }
+
+// Machine-readable copy for the Arkiv publisher (scripts/publish-arkiv.ts). No addresses.
+const observedAt = new Date().toISOString();
+const observations = rows.flatMap((r) =>
+  r.recipients.map((x) => {
+    const mine = r.leaks.filter((l) => l.recipientHost === x.recipientHost);
+    return {
+      site: getDomain(r.url, { allowPrivateDomains: true }) ?? new URL(r.url).hostname,
+      recipient: x.recipientSite,
+      recipientHost: x.recipientHost,
+      company: x.company ?? x.recipientSite,
+      category: x.category,
+      location: [...new Set(mine.map((l) => l.location))].join(', '),
+      encoding: [...new Set(mine.map((l) => l.transform))].join(', '),
+      outcome: mine.some((l) => l.outcome === 'delivered') ? 'delivered' : (mine[0].outcome ?? 'unknown'),
+      observedAt,
+    };
+  }),
+);
+writeFileSync(fileURLToPath(new URL('../research/field-test.json', import.meta.url)), JSON.stringify({ observedAt, observations }, null, 2) + '\n');
 
 const redacted = ADDR.slice(0, 6) + '…' + ADDR.slice(-4);
 const md = [

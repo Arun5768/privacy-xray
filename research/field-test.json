@@ -1,0 +1,38 @@
+{
+  "observedAt": "2026-11-06T19:57:37.511Z",
+  "observations": [
+    {
+      "site": "etherscan.io",
+      "recipient": "google.com",
+      "recipientHost": "analytics.google.com",
+      "company": "Google Analytics",
+      "category": "analytics",
+      "location": "query",
+      "encoding": "plain",
+      "outcome": "delivered",
+      "observedAt": "2026-11-06T19:57:37.511Z"
+    },
+    {
+      "site": "etherscan.io",
+      "recipient": "adx.ws",
+      "recipientHost": "req.adx.ws",
+      "company": "adx.ws",
+      "category": "other",
+      "location": "body",
+      "encoding": "plain",
+      "outcome": "delivered",
+      "observedAt": "2026-11-06T19:57:37.511Z"
+    },
+    {
+      "site": "blockscout.com",
+      "recipient": "google.com",
+      "recipientHost": "analytics.google.com",
+      "company": "Google Analytics",
+      "category": "analytics",
+      "location": "query",
+      "encoding": "plain",
+      "outcome": "delivered",
+      "observedAt": "2026-11-06T19:57:37.511Z"
+    }
+  ]
+}
