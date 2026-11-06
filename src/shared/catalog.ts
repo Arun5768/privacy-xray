@@ -55,9 +55,16 @@ const CATALOG: Record<string, Entry> = {
   'demotrack.invalid': { company: 'DemoTrack Analytics', category: 'analytics' },
 };
 
+// Hosts on shared domains (google.com) that need a more specific label.
+const HOSTS: Record<string, Entry> = {
+  'analytics.google.com': { company: 'Google Analytics', category: 'analytics' },
+  'stats.g.doubleclick.net': { company: 'Google Ads', category: 'analytics' },
+  'www.google-analytics.com': { company: 'Google Analytics', category: 'analytics' },
+};
+
 export function classify(url: string, body: string | null): Entry & { known: boolean } {
   const site = siteOf(url);
-  const hit = CATALOG[site];
+  const hit = HOSTS[hostOf(url)] ?? CATALOG[site];
   if (hit) return { ...hit, known: true };
   if (body && /"jsonrpc"\s*:/.test(body) && /"method"\s*:\s*"eth_/.test(body)) {
     return { company: site, category: 'rpc', known: false };
