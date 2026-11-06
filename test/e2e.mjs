@@ -47,6 +47,7 @@ try {
     const shot = await browser.newPage();
     await shot.setViewport({ width: 400, height: 600, deviceScaleFactor: 2 });
     await shot.goto(`chrome-extension://${extId}/popup.html?tab=${tabId}`);
+    await shot.waitForSelector('details.recipient', { timeout: 5000 }).catch(() => {});
     await shot.evaluate(() => document.querySelector('details.recipient')?.setAttribute('open', ''));
     await sleep(300);
     await shot.screenshot({ path: `test/e2e-popup-${label.includes('ON') ? 'protect-on' : 'protect-off'}.png`, fullPage: true });
