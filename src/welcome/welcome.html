@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome to 0xRay</title>
+  <link rel="icon" href="icons/icon-32.png" />
+  <link rel="stylesheet" href="welcome.css" />
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+  <main>
+    <header class="intro">
+      <div class="eye" id="eye" aria-hidden="true">
+        <svg viewBox="0 0 128 128">
+          <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#0e1218" stroke="#e8f1f2" stroke-width="7" stroke-linejoin="round"/>
+          <g id="pupil">
+            <circle cx="64" cy="64" r="22" fill="#39f0d0"/>
+            <circle cx="64" cy="64" r="9" fill="#07090d"/>
+            <circle cx="70" cy="57" r="4" fill="#fff"/>
+          </g>
+        </svg>
+        <span class="beam"></span>
+      </div>
+      <p class="kicker">Installed</p>
+      <h1><span class="word">0xRay</span> <span class="word">is</span> <span class="word">watching</span> <span class="word accent">the&nbsp;watchers.</span></h1>
+      <p class="lede">From now on, every request a crypto app sends to another company is checked for your wallet address. Three steps and you're set.</p>
+    </header>
+
+    <ol class="steps">
+      <li class="step" style="--i:0">
+        <span class="n">01</span>
+        <div>
+          <h2>Pin 0xRay to your toolbar</h2>
+          <p>Click the puzzle-piece icon, then the pin next to 0xRay. Its badge turns red the moment a page sends your address somewhere.</p>
+          <div class="toolbar" aria-hidden="true">
+            <span class="omni"></span>
+            <span class="puzzle">🧩</span>
+            <span class="pin"><img src="icons/icon-32.png" alt="" /><b class="badge">3</b></span>
+          </div>
+        </div>
+      </li>
+      <li class="step" style="--i:1">
+        <span class="n">02</span>
+        <div>
+          <h2>Watch it catch a leak</h2>
+          <p>Open the demo dApp, connect the throwaway demo wallet, then click the 0xRay icon. You'll see three leaks: plain, Base64 and a "hashed" one, with proof for each.</p>
+          <a class="btn" href="https://arun5768.github.io/privacy-xray/demo/" target="_blank" rel="noopener">Open the demo dApp →</a>
+        </div>
+      </li>
+      <li class="step" style="--i:2">
+        <span class="n">03</span>
+        <div>
+          <h2>Use crypto like normal</h2>
+          <p>Connect your wallet anywhere as usual. Turn on <b>Protect</b> in the popup to stop requests carrying your address. RPC providers are never blocked, so dApps keep working.</p>
+        </div>
+      </li>
+    </ol>
+
+    <section class="promise">
+      <h3>Our promise</h3>
+      <ul>
+        <li><b>Nothing leaves your device.</b> 0xRay makes no network requests of its own: no servers, no analytics, no account.</li>
+        <li><b>Never touches your keys.</b> It only reads what pages send; it can't sign or move anything.</li>
+        <li><b>Open source.</b> MIT licensed; read every line on <a href="https://github.com/Arun5768/privacy-xray" target="_blank" rel="noopener">GitHub</a>.</li>
+      </ul>
+    </section>
+  </main>
+  <script src="welcome.js"></script>
+</body>
+</html>

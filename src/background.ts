@@ -262,6 +262,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   ['requestHeaders', 'extraHeaders'],
 );
 
+// First install: open the local welcome page (part of the extension, no network).
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') chrome.tabs.create({ url: chrome.runtime.getURL('welcome.html') });
+});
+
 chrome.tabs.onRemoved.addListener((tabId) => {
   delete state.leaks[tabId];
   tabUrls.delete(tabId);

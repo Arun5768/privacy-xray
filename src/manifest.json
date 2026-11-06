@@ -1,12 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Privacy X-Ray",
-  "version": "0.1.0",
-  "description": "See which third parties receive your wallet address, prove it, and block it. Everything stays on your device.",
+  "name": "0xRay",
+  "version": "0.2.0",
+  "description": "See which companies a crypto app sends your wallet address to, with proof. Block it in one click. Runs entirely on your device.",
+  "icons": { "16": "icons/icon-16.png", "32": "icons/icon-32.png", "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
   "permissions": ["webRequest", "declarativeNetRequest", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": { "service_worker": "background.js" },
-  "action": { "default_popup": "popup.html", "default_title": "Privacy X-Ray" },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "0xRay",
+    "default_icon": { "16": "icons/icon-16.png", "32": "icons/icon-32.png" }
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

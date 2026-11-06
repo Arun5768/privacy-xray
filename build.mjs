@@ -8,6 +8,12 @@ mkdirSync('dist', { recursive: true });
 cpSync('src/manifest.json', 'dist/manifest.json');
 cpSync('src/popup/popup.html', 'dist/popup.html');
 cpSync('src/popup/popup.css', 'dist/popup.css');
+cpSync('src/welcome/welcome.html', 'dist/welcome.html');
+cpSync('src/welcome/welcome.css', 'dist/welcome.css');
+cpSync('src/icons', 'dist/icons', { recursive: true });
+// The website uses the same logo.
+cpSync('src/icons/logo.svg', 'docs/img/logo.svg');
+cpSync('src/icons/icon-32.png', 'docs/favicon.png');
 
 const options = {
   entryPoints: {
@@ -15,6 +21,7 @@ const options = {
     content: 'src/content.ts',
     inject: 'src/inject.ts',
     popup: 'src/popup/popup.ts',
+    welcome: 'src/welcome/welcome.ts',
   },
   outdir: 'dist',
   bundle: true,
