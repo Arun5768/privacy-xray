@@ -110,4 +110,11 @@ $('form').addEventListener('submit', (e) => {
   if (v) void lookup(v);
 });
 $('publisher').textContent = PUBLISHER;
-void recent();
+// /registry/?site=etherscan.io (from the homepage form) looks the site up directly.
+const requested = new URLSearchParams(location.search).get('site');
+if (requested) {
+  ($('site') as HTMLInputElement).value = requested;
+  void lookup(requested);
+} else {
+  void recent();
+}
