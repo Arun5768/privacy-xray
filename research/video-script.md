@@ -6,7 +6,7 @@ Setup before recording: `npm run demo` running; extension loaded in Brave; track
 
 | Time | Screen | Say (roughly) |
 |---|---|---|
-| 0:00–0:20 | Landing page, red live bar at top | "Your hardware wallet protects your money. Nothing protects your identity. When you connect to a crypto app, its own code can send your wallet address to analytics and ad companies. Researchers found 211 dApps doing it. And in 2026, crypto kidnappings hit a record, partly fuelled by leaked identities." |
+| 0:00–0:20 | Landing page, red live bar at top | "Your hardware wallet protects your money. Nothing protects your identity. When you connect to a crypto app, its own code can send your wallet address to analytics and ad companies. Researchers found 211 dApps doing it. And 2026 is on pace for a record year of physical attacks on crypto holders, partly linked to leaked identities." |
 | 0:20–0:35 | Point at the bar | "This bar is live: the page sees my wallet, and nothing tells me where my address goes. That's what Privacy X-Ray fixes." |
 | 0:35–1:05 | Demo dApp → click "Use a throwaway demo wallet" → badge turns red → open popup | "Here's an ordinary-looking dApp with an analytics script. I connect… and X-Ray catches three leaks. One in plain text in a URL. One hidden in Base64. One 'anonymised' as a SHA-256 hash: still my address. For each one, it shows who got it and which script sent it." |
 | 1:05–1:20 | Tracker log tab: 3 received | "And here's the tracker's own server: it really received all three." |
