@@ -19,4 +19,5 @@ Outcome: `delivered` = the request completed; `blocked-by-browser` = Brave Shiel
 | OpenSea | error: net::ERR_ABORTED at https://opensea.io/0x5b03a2c85d47801a43c4a2b6087051b8d58e8a5a | none observed | — |
 | Arkham | yes | none observed | — |
 | OKLink | yes | none observed | — |
+
 An earlier run the same night (different random address, before outcome tracking was added) also observed: `www.googletagmanager.com` on Etherscan and Blockscout (query · plain), and `api.hyperliquid.xyz` and `atd2.openseaprorelayproxy.com` on OpenSea (body · plain). In the run above, OpenSea and two portfolio sites showed a bot check instead of the page, so they could not be observed.
