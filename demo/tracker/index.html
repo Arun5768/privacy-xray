@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>DemoTrack: received data</title>
+  <style>
+    body { margin: 0; background: #12110e; color: #f3efe6; font: 14px/1.5 ui-monospace, Consolas, monospace; }
+    header { padding: 16px 20px; border-bottom: 1px solid #2e2b25; display: flex; justify-content: space-between; align-items: center; }
+    h1 { margin: 0; font-size: 16px; }
+    #count { font-size: 28px; font-weight: 800; }
+    .zero { color: #30a46c; } .some { color: #e5484d; }
+    ul { list-style: none; margin: 0; padding: 12px 20px; }
+    li { padding: 8px 0; border-bottom: 1px dashed #2e2b25; word-break: break-all; }
+    small { color: #a39d90; }
+    button { background: none; color: #f3efe6; border: 1px solid #a39d90; padding: 4px 10px; cursor: pointer; font: inherit; }
+  </style>
+</head>
+<body>
+  <header>
+    <div><h1>DemoTrack Analytics · server log</h1><small>What the tracker actually received</small></div>
+    <div><span id="count">0</span> <button id="reset">reset</button></div>
+  </header>
+  <ul id="log"></ul>
+  <script>
+    async function tick() {
+      const log = await (await fetch('/log')).json();
+      const c = document.getElementById('count');
+      c.textContent = log.length + ' received';
+      c.className = log.length ? 'some' : 'zero';
+      document.getElementById('log').innerHTML = log.slice().reverse()
+        .map((e) => `<li><small>${e.at}</small><br>${e.method} ${e.path}${e.body ? '<br><small>body:</small> ' + e.body.replace(/</g, '&lt;') : ''}</li>`).join('');
+    }
+    document.getElementById('reset').onclick = () => fetch('/reset').then(tick);
+    tick(); setInterval(tick, 1000);
+  </script>
+</body>
+</html>

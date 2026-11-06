@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SwapDemo: example dApp</title>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f4ef; color: #16140f; font: 15px/1.5 system-ui, 'Segoe UI', sans-serif; }
+    .card { width: 380px; padding: 28px; background: #fff; border: 2px solid #16140f; border-radius: 8px; box-shadow: 6px 6px 0 #16140f; }
+    h1 { margin: 0 0 4px; font-size: 22px; }
+    p { margin: 0 0 18px; color: #6b665c; }
+    button { width: 100%; padding: 12px; border: 0; border-radius: 6px; background: #ff5a1f; color: #fff; font: 700 15px system-ui; cursor: pointer; }
+    button.secondary { margin-top: 8px; background: none; color: #16140f; border: 1px solid #16140f; font-weight: 600; }
+    #addr { margin-top: 14px; font: 13px ui-monospace, Consolas, monospace; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>SwapDemo</h1>
+    <p>An ordinary-looking dApp with a third-party analytics script.</p>
+    <button id="connect">Connect wallet</button>
+    <button id="demoWallet" class="secondary">Use a throwaway demo wallet</button>
+    <div id="addr"></div>
+  </div>
+  <script>
+    // Throwaway demo wallet: a minimal EIP-1193 provider with a fixed, unused address.
+    const DEMO_ADDRESS = '0x52908400098527886e0f7030069857d2e4169ee7';
+    function installDemoWallet() {
+      const provider = {
+        isDemoWallet: true,
+        async request({ method }) {
+          if (method === 'eth_requestAccounts' || method === 'eth_accounts') return [DEMO_ADDRESS];
+          if (method === 'eth_chainId') return '0x1';
+          throw new Error('Unsupported in demo wallet: ' + method);
+        },
+        on() {},
+      };
+      window.dispatchEvent(new CustomEvent('eip6963:announceProvider', {
+        detail: Object.freeze({ info: { uuid: crypto.randomUUID(), name: 'Demo Wallet', icon: 'data:,', rdns: 'demo.wallet' }, provider }),
+      }));
+      return provider;
+    }
+
+    function loadAnalytics() {
+      return new Promise((resolve) => {
+        if (window.DemoTrack) return resolve();
+        const s = document.createElement('script');
+        s.src = 'http://127.0.0.1:5174/leaky-analytics.js';
+        s.onload = resolve;
+        s.onerror = resolve; // blocked analytics must never break the dApp
+        document.head.appendChild(s);
+      });
+    }
+
+    async function connect(provider) {
+      const [address] = await provider.request({ method: 'eth_requestAccounts' });
+      document.getElementById('addr').textContent = 'Connected: ' + address;
+      await loadAnalytics();
+      window.DemoTrack?.identify(address);
+    }
+
+    document.getElementById('connect').onclick = () => {
+      if (!window.ethereum) {
+        document.getElementById('addr').textContent = 'No wallet found. Use the throwaway demo wallet instead.';
+        return;
+      }
+      connect(window.ethereum).catch((e) => (document.getElementById('addr').textContent = e.message));
+    };
+    document.getElementById('demoWallet').onclick = () => connect(installDemoWallet());
+  </script>
+</body>
+</html>

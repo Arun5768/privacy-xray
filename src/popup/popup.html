@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Privacy X-Ray</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="status" class="status"></div>
+  <header class="top">
+    <div class="brand">PRIVACY X-RAY</div>
+    <div id="grade" class="grade"></div>
+  </header>
+  <div id="page" class="page"></div>
+
+  <main id="list"></main>
+
+  <section class="controls">
+    <label class="switch">
+      <input type="checkbox" id="protect" />
+      <span class="track"><span class="thumb"></span></span>
+      <span class="label">
+        <strong>Protect</strong>
+        <small>Stop requests that carry your address. RPC providers are never blocked.</small>
+      </span>
+    </label>
+
+    <div class="watch">
+      <div class="watch-head">
+        <strong>Watched addresses</strong>
+        <small>Learned from your wallet on connect, or add one.</small>
+      </div>
+      <div id="addresses" class="chips"></div>
+      <form id="addForm" class="add">
+        <input id="addInput" placeholder="0x… address to watch" spellcheck="false" autocomplete="off" />
+        <button type="submit">Watch</button>
+      </form>
+      <div id="addError" class="error"></div>
+    </div>
+
+    <div class="actions">
+      <button id="export" class="primary">Export evidence report</button>
+      <button id="clear">Clear</button>
+    </div>
+  </section>
+
+  <footer class="foot">Runs entirely on this device · no servers · no analytics · MIT</footer>
+  <script src="popup.js"></script>
+</body>
+</html>
