@@ -11,11 +11,14 @@
     "demo": "node demo/serve.mjs",
     "test": "node --test test/detect.test.ts",
     "e2e": "npm run build && node test/e2e.mjs",
-    "package": "npm run build && node scripts/package.mjs"
+    "package": "npm run build && node scripts/package.mjs",
+    "publish:arkiv": "node --env-file=.env scripts/publish-arkiv.ts"
   },
   "dependencies": {
+    "@arkiv-network/sdk": "1.0.1",
     "@noble/hashes": "2.4.0",
-    "tldts": "7.4.19"
+    "tldts": "7.4.19",
+    "viem": "2.57.16"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.300",
