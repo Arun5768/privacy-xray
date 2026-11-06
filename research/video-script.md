@@ -1,18 +1,30 @@
-# Demo video script (target 2:40, max 2:59)
+# Demo video script (target 2:45, hard limit 2:59)
 
-Rules: 720p or higher, your own voice, no music, not sped up. One take per scene is fine; cut between scenes.
+Rules: 720p or higher, your own voice, no music, not sped up. Record each scene separately and cut them together.
 
-Setup before recording: `npm run demo` running; extension loaded in Brave; tracker log open at http://127.0.0.1:5174 (click reset); Protect off; popup closed.
+## Before recording
+
+- Brave, with 0xRay freshly loaded from `dist/` (remove the old copy first, so the onboarding wizard opens).
+- Tabs ready: the homepage, the Scan page, the demo dApp.
+- Close other tabs, hide bookmarks, zoom to 110% so text is readable.
+- Protect off.
+
+## Scenes
 
 | Time | Screen | Say (roughly) |
 |---|---|---|
-| 0:00–0:20 | Landing page, red live bar at top | "Your hardware wallet protects your money. Nothing protects your identity. When you connect to a crypto app, its own code can send your wallet address to analytics and ad companies. Researchers found 211 dApps doing it. And 2026 is on pace for a record year of physical attacks on crypto holders, partly linked to leaked identities." |
-| 0:20–0:35 | Point at the bar | "This bar is live: the page sees my wallet, and nothing tells me where my address goes. That's what 0xRay fixes." |
-| 0:35–1:05 | Demo dApp → click "Use a throwaway demo wallet" → badge turns red → open popup | "Here's an ordinary-looking dApp with an analytics script. I connect… and 0xRay catches three leaks. One in plain text in a URL. One hidden in Base64. One 'anonymised' as a SHA-256 hash: still my address. For each one, it shows who got it and which script sent it." |
-| 1:05–1:20 | Tracker log tab: 3 received | "And here's the tracker's own server: it really received all three." |
-| 1:20–1:50 | Reset tracker → turn on Protect → reload dApp → connect → popup green → tracker log "0 received" | "Now I turn on Protect and do the same thing. All three attempts are stopped before they leave the page. The tracker receives nothing. RPC providers are never blocked, so dApps keep working." |
-| 1:50–2:10 | Etherscan for a random address; popup showing Google Analytics, delivered | "On real sites: I opened Etherscan for a random address. 0xRay shows it was delivered to Google Analytics and an ad host. Observations, not accusations, but now you can see it." |
-| 2:10–2:25 | Export report; show the Markdown | "Teams can export an evidence report. Under the EU's July 2026 guidelines, a linkable wallet address is personal data, even hashed." |
-| 2:25–2:40 | DevTools Network tab of the extension's service worker, empty; README CROPS section | "And it practises what it preaches: no servers, no analytics, zero network requests of its own, open source under MIT. 0xRay: see who's watching your wallet." |
+| 0:00–0:15 | Homepage: headline animates in, the X-ray beam sweeps across the swap screen | "Your hardware wallet protects your money. Nothing protects your identity. The moment you connect, the site's own code can send your wallet address to analytics and ad companies. Researchers found 211 dApps doing it." |
+| 0:15–0:35 | Type `vitalik.eth` in the hero box → Scan page → press Run → score ring fills, cards appear | "So what does a tracker learn from an address? This is 0xRay Scan. One address gives away a name, linked X and GitHub accounts, balances on five chains, and every transaction. That's why leaking it matters." |
+| 0:35–0:55 | Onboarding wizard: pin step turns green, confetti | "0xRay is a browser extension. When you install it, a short setup walks you through it. It notices when I pin it…" |
+| 0:55–1:25 | Wizard step 3 → Open the demo dApp → "Use a throwaway demo wallet" → the dApp's log shows the three leaks → back to the wizard: "Caught 3 leaks", confetti → click the 0xRay icon | "…and here's a deliberately leaky dApp. I connect, and its analytics script sends my address three ways: plain text, hidden in Base64, and 'anonymised' as a SHA-256 hash. 0xRay catches all three, with proof: who got it, how it was encoded, which script sent it, and whether it was delivered." |
+| 1:25–1:45 | Popup: turn on Protect → reload the demo, connect again → popup goes green, "3 attempts blocked" | "One switch: Protect. Same page, same script, and every request carrying my address is stopped before it leaves. RPC providers are never blocked, so apps keep working." |
+| 1:45–2:15 | Popup → Run privacy audit → the agent page fills in site by site → summary "2 of 9 sites handed the address to 4 companies" | "And this is the agent. It visits nine popular crypto sites in background tabs, each with a random decoy address that belongs to nobody, and watches who receives it. Etherscan sent it to Google Analytics and an ad host. OpenSea to two other services. My real address never left my browser." |
+| 2:15–2:30 | Registry page: type etherscan.io → rows appear | "Those findings go to a public registry on Arkiv, so anyone can check a site before connecting. Every entry expires after 30 days, so it stays current." |
+| 2:30–2:45 | How it works page, the CROPS cards; then the homepage logo | "No servers, no analytics, no account, never touches your keys, open source. 0xRay. See who's watching your wallet." |
 
-Showing zero extension requests: `brave://extensions` → 0xRay → "service worker" link → Network tab; use the dApp; the list stays empty.
+## Tips
+
+- If the wizard's pin step doesn't turn green, pin it before recording that scene.
+- If a site in the audit shows a bot check, that's fine: it reports "none seen".
+- The audit takes about 2 minutes in real time. Record it fully, then cut to the summary; don't speed it up.
+- Speak a little slower than feels natural; 2:45 leaves room.
