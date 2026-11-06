@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="0xRay">
+  <defs>
+    <radialGradient id="iris" cx="50%" cy="45%" r="60%">
+      <stop offset="0" stop-color="#9dfff0"/>
+      <stop offset="0.55" stop-color="#39f0d0"/>
+      <stop offset="1" stop-color="#0fa58c"/>
+    </radialGradient>
+    <linearGradient id="beam" x1="0" x2="1">
+      <stop offset="0" stop-color="#39f0d0" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#39f0d0"/>
+      <stop offset="1" stop-color="#39f0d0" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="#07090d"/>
+  <rect x="3" y="3" width="122" height="122" rx="27" fill="none" stroke="#1c2a33" stroke-width="2"/>
+  <!-- the eye -->
+  <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#0e1218" stroke="#e8f1f2" stroke-width="8" stroke-linejoin="round"/>
+  <circle cx="64" cy="64" r="22" fill="url(#iris)"/>
+  <!-- pupil: a "0x" hole you can see through -->
+  <circle cx="64" cy="64" r="9" fill="#07090d"/>
+  <circle cx="70" cy="57" r="4" fill="#ffffff"/>
+  <!-- scan beam -->
+  <rect x="10" y="62" width="108" height="4" rx="2" fill="url(#beam)" opacity="0.9"/>
+</svg>
