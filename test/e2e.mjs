@@ -4,8 +4,9 @@ import puppeteer from 'puppeteer-core';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const EXT = process.argv[2] ?? new URL('../dist', import.meta.url).pathname.replace(/^/([A-Za-z]:)/, '$1');
+const EXT = process.argv[2] ?? fileURLToPath(new URL('../dist', import.meta.url));
 const BROWSER = 'C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const trackerLog = async () => (await fetch('http://127.0.0.1:5174/log')).json();
