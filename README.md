@@ -18,6 +18,8 @@ When you connect a wallet, the dApp's own JavaScript can send your address anywh
 
 Existing tools either measure this in research settings or hide traffic without showing what leaked. Privacy X-Ray shows ordinary users what is happening, live, on any dApp.
 
+**What we observed ourselves** ([`research/field-test.md`](research/field-test.md), reproducible with `node test/field-survey.mjs`): opening Etherscan's page for a freshly generated random address, the address was delivered to Google Analytics and to an ad host (`req.adx.ws`); on Blockscout, to Google Analytics. DeBank, Arkham and OKLink showed no third-party recipients in the same test. These are observations, not accusations: an address in a URL is normal for explorers, and the point is to make visible who receives it.
+
 ## What it does
 
 1. **Learns your address on your device.** It watches the wallet provider's replies (EIP-1193 and EIP-6963) for `eth_requestAccounts` / `eth_accounts`, or you paste an address to watch.
@@ -26,7 +28,7 @@ Existing tools either measure this in research settings or hide traffic without 
    - URL-encoded and Base64 (including Base64 JSON)
    - SHA-256, Keccak-256, SHA-1 and MD5 hashes of the address (hex or Base64)
    - in the URL, request body, `Cookie` and `Referer` headers, and WebSocket messages
-3. **Shows proof** for each finding: recipient and company, category (analytics / RPC / error / other), where the address was hidden, how it was encoded, the script that sent it, and a redacted snippet.
+3. **Shows proof** for each finding: recipient and company, category (analytics / RPC / error / other), where the address was hidden, how it was encoded, the script that sent it, a redacted snippet, and what happened on the network (delivered, blocked by the browser, e.g. Brave Shields, or failed), so a finding is never overstated.
 4. **Protect** (off by default) stops requests carrying your address before they leave the page, and blocks further data-carrying requests to recipients caught leaking. RPC providers are never blocked, so dApps keep working; instead the popup points to the EF's [Anon-RPC](https://ethereum.github.io/anon-rpc/).
 5. **Evidence report** exports the findings as Markdown or JSON, for users or for dApp teams auditing their own frontend.
 
@@ -57,6 +59,7 @@ Load `dist/` as an unpacked extension, open the dApp, connect the demo wallet, a
 ```bash
 npm test             # detector unit tests (encodings, redaction, no false positives, site logic)
 npm run e2e          # loads the extension in a throwaway Brave profile and runs the demo with Protect off and on
+node test/field-survey.mjs   # visits 8 real explorer / portfolio pages for a random address; writes research/field-test.md
 ```
 
 `npm run e2e` expects the demo servers to be running and Brave at its default Windows path; change `BROWSER` in `test/e2e.mjs` for another Chromium browser. It passes when the tracker receives 3 leaks with Protect off, 0 with Protect on, and all 3 show as blocked.
