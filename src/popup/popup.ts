@@ -1,10 +1,10 @@
 import type { Leak } from '../shared/types.ts';
 
-type View = { leaks: Leak[]; addresses: string[]; protect: boolean; pageUrl: string };
+type View = { leaks: Leak[]; addresses: string[]; protect: boolean; pageUrl: string; checked: number; hosts: string[] };
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 let tabId = -1;
-let view: View = { leaks: [], addresses: [], protect: false, pageUrl: '' };
+let view: View = { leaks: [], addresses: [], protect: false, pageUrl: '', checked: 0, hosts: [] };
 
 function esc(s: string | undefined): string {
   return (s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -65,9 +65,29 @@ function render() {
   $('grade').textContent = addresses.length ? grade(leaks) : '–';
   $('page').textContent = pageUrl ? new URL(pageUrl).host : '';
 
+  // Show the work being done, not only the results.
+  const act = $('activity');
+  if (addresses.length) {
+    const carried = new Set(leaks.map((l) => l.recipientHost)).size;
+    act.innerHTML = `<b>${view.checked}</b> request${view.checked === 1 ? '' : 's'} to <b>${view.hosts.length}</b> other compan${view.hosts.length === 1 ? 'y' : 'ies'} checked on this page · <b>${carried}</b> carried your address`
+      + (view.hosts.length ? `<details data-key="hosts"><summary>Companies this page contacted</summary><div class="hosts">${view.hosts.map((h) => `<code>${esc(h)}</code>`).join(' ')}</div></details>` : '');
+    act.hidden = false;
+  } else {
+    act.hidden = true;
+  }
+
   const list = $('list');
-  if (!leaks.length) {
-    list.innerHTML = `<div class="empty"><strong>Nothing caught yet</strong>Use the dApp normally. Any request that carries your wallet address to another company shows up here with proof.</div>`;
+  if (!addresses.length) {
+    list.innerHTML = `<div class="empty"><strong>How it works</strong>
+      <ol class="how">
+        <li><b>Connect your wallet</b> on this site as usual. X-Ray learns your address on this device only.</li>
+        <li>Or <b>paste an address</b> below to watch it.</li>
+        <li>Keep using the site. Every request to another company is checked, and anything carrying your address shows up here with proof.</li>
+      </ol></div>`;
+  } else if (!leaks.length) {
+    list.innerHTML = view.checked
+      ? `<div class="empty"><strong>No leaks on this page so far</strong>None of the ${view.checked} requests to other companies carried your address. Keep using the site; this updates live.</div>`
+      : `<div class="empty"><strong>Watching</strong>No requests to other companies yet on this page. If you added the address after the page loaded, reload to check it from the start.<button id="reloadEmpty" class="reload">Reload &amp; check this page</button></div>`;
   } else {
     list.innerHTML = [...recipients.entries()]
       .map(([site, items]) => {
@@ -93,7 +113,7 @@ function render() {
           first.category === 'rpc'
             ? `<div class="hint">Your RPC provider can link this address to your IP. Protect never blocks RPC (the dApp would break). A private option is the Ethereum Foundation's <a href="https://ethereum.github.io/anon-rpc/" target="_blank" rel="noopener noreferrer">Anon-RPC</a>.</div>`
             : '';
-        return `<details class="recipient">
+        return `<details class="recipient" data-key="${esc(site)}">
           <summary>
             <span><div class="who">${esc(first.company)}</div><div class="site">${esc(first.recipientHost)}</div></span>
             <span class="count ${sent ? '' : 'safe'}">${items.length}×</span>
@@ -109,9 +129,19 @@ function render() {
     : '<span class="chip">none yet</span>';
 }
 
+let lastJson = '';
 async function refresh() {
-  view = await chrome.runtime.sendMessage({ type: 'get', tabId });
+  const next = await chrome.runtime.sendMessage({ type: 'get', tabId });
+  const json = JSON.stringify(next);
+  if (json === lastJson) return; // unchanged: keep the DOM (and open sections) as is
+  lastJson = json;
+  view = next;
+  // Keep expanded sections expanded across live updates.
+  const open = new Set([...document.querySelectorAll<HTMLDetailsElement>('details[open]')].map((d) => d.dataset.key));
   render();
+  document.querySelectorAll<HTMLDetailsElement>('details').forEach((d) => {
+    if (open.has(d.dataset.key)) d.open = true;
+  });
 }
 
 function report(): string {
@@ -186,16 +216,38 @@ async function main() {
 
   $('protect').addEventListener('change', async (e) => {
     await chrome.runtime.sendMessage({ type: 'setProtect', on: (e.target as HTMLInputElement).checked });
+    $('addMsg').className = 'msg ok';
+    $('addMsg').textContent = (e.target as HTMLInputElement).checked
+      ? 'Protect is on. Requests carrying your address are stopped from now on.'
+      : 'Protect is off. Leaks are shown but not stopped.';
     await refresh();
   });
   $('addForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('addInput') as HTMLInputElement;
-    const res = await chrome.runtime.sendMessage({ type: 'addAddress', address: input.value });
-    $('addError').textContent = res?.ok ? '' : res?.error ?? 'Could not add address';
-    if (res?.ok) input.value = '';
+    const value = input.value.trim();
+    const res = await chrome.runtime.sendMessage({ type: 'addAddress', address: value });
+    const msg = $('addMsg');
+    if (res?.ok) {
+      input.value = '';
+      msg.className = 'msg ok';
+      msg.innerHTML = `Now watching <code>${esc(value.slice(0, 6) + '…' + value.slice(-4))}</code>. Requests from now on are checked; this page loaded before, so reload it to check from the start. <button id="reloadNow" class="reload">Reload &amp; check this page</button>`;
+    } else {
+      msg.className = 'msg error';
+      msg.textContent = res?.error ?? 'Could not add address';
+    }
     await refresh();
   });
+  // Reload buttons appear inside rendered content, so listen at the document.
+  document.addEventListener('click', async (e) => {
+    const id = (e.target as HTMLElement).id;
+    if (id !== 'reloadNow' && id !== 'reloadEmpty') return;
+    await chrome.tabs.reload(tabId);
+    $('addMsg').className = 'msg ok';
+    $('addMsg').textContent = 'Reloading… checks appear here live as the page loads.';
+  });
+  // Live counters while the popup is open.
+  setInterval(() => void refresh(), 1000);
   $('export').addEventListener('click', () => save(report(), 'text/markdown', 'md'));
   $('exportJson').addEventListener('click', () => save(reportJson(), 'application/json', 'json'));
   $('clear').addEventListener('click', async () => {

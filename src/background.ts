@@ -12,6 +12,8 @@ const state = {
 };
 let needles: Needle[] = [];
 const tabUrls = new Map<number, string>();
+// Per-tab activity, so the popup can show the work being done, not just results.
+const activity = new Map<number, { checked: number; hosts: Set<string> }>();
 const hints = new Map<string, { script: string; ts: number }>();
 const ruleIds = new Map<string, number>();
 const MAX_ADDRESSES = 10;
@@ -183,6 +185,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     if (details.type === 'main_frame') {
       // A new top-level page starts a fresh report for that tab.
       tabUrls.set(details.tabId, details.url);
+      activity.set(details.tabId, { checked: 0, hosts: new Set() });
       void ready.then(() => {
         state.leaks[details.tabId] = [];
         updateBadge(details.tabId);
@@ -194,6 +197,10 @@ chrome.webRequest.onBeforeRequest.addListener(
       if (!needles.length) return;
       const pageUrl = details.initiator ?? tabUrls.get(details.tabId) ?? '';
       if (!isThirdParty(pageUrl, details.url)) return;
+      const a = activity.get(details.tabId) ?? { checked: 0, hosts: new Set<string>() };
+      a.checked++;
+      a.hosts.add(hostOf(details.url));
+      activity.set(details.tabId, a);
       const body = decodeBody(details.requestBody);
       const match = scan(details.url, needles, 'query') ?? scan(body, needles, 'body');
       if (!match) return;
@@ -258,6 +265,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 chrome.tabs.onRemoved.addListener((tabId) => {
   delete state.leaks[tabId];
   tabUrls.delete(tabId);
+  activity.delete(tabId);
   persist();
 });
 
@@ -298,6 +306,8 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
           addresses: state.addresses.map(redactAddress),
           protect: state.protect,
           pageUrl: tabUrls.get(tab) ?? '',
+          checked: activity.get(tab)?.checked ?? 0,
+          hosts: [...(activity.get(tab)?.hosts ?? [])].sort(),
         });
       }
       case 'setProtect': {
