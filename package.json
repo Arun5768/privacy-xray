@@ -1,0 +1,22 @@
+{
+  "name": "privacy-xray",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "See which third parties receive your wallet address, prove it, and block it. Everything stays on your device.",
+  "scripts": {
+    "build": "node build.mjs",
+    "watch": "node build.mjs --watch",
+    "demo": "node demo/serve.mjs",
+    "test": "node --test test/detect.test.ts"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "tldts": "7.4.19"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.300",
+    "esbuild": "^0.25.0"
+  }
+}

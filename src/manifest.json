@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Privacy X-Ray",
+  "version": "0.1.0",
+  "description": "See which third parties receive your wallet address, prove it, and block it. Everything stays on your device.",
+  "permissions": ["webRequest", "declarativeNetRequest", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html", "default_title": "Privacy X-Ray" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["inject.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ]
+}
