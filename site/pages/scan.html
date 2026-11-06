@@ -1,0 +1,38 @@
+<!-- {"title": "Scan an address · 0xRay", "description": "Paste a wallet address or ENS name and see what anyone who gets it learns: names, linked socials, balances and activity across chains.", "path": "scan/", "page": "scan", "scripts": ["scan.js"]} -->
+    <section class="hero scan-hero">
+      <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="wrap">
+        <p class="kicker"><i></i>Exposure report · 10 seconds</p>
+        <h1 class="display words">What does your address <em class="pink">give away?</em></h1>
+        <p class="lede">The moment a tracker gets your wallet address, it can look all of this up. So can we. Paste an address or ENS name and see it the way they do.</p>
+        <form id="form" class="field scan-field">
+          <input id="addr" placeholder="0x… or name.eth" autocomplete="off" spellcheck="false" aria-label="Wallet address or ENS name" required />
+          <button class="btn btn-pink magnetic" type="submit">Run report <span class="arrow">→</span></button>
+        </form>
+        <p class="consent">
+          <b>What Run does:</b> read-only lookups on PublicNode's public RPCs (Ethereum, Base, Arbitrum, Optimism, Polygon) and Arkiv's public endpoint, so those services see the address you scan. Nothing is stored. Rather not? <button id="sample" class="linkish" type="button">Try it on vitalik.eth</button>, or use the extension, which makes no requests at all.
+        </p>
+        <p id="preNote" class="consent pre" hidden>Address filled in from the homepage. Press <b>Run report</b> when you're ready.</p>
+      </div>
+    </section>
+
+    <section id="report" class="wrap report" hidden>
+      <div class="report-top">
+        <div class="score">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="track" /><circle id="ring" cx="60" cy="60" r="52" class="ring" /></svg>
+          <div class="score-in"><b id="scoreNum">0</b><span>/100 exposure</span></div>
+        </div>
+        <div class="report-head">
+          <p class="kicker"><i></i>Report for <span id="who" class="mono"></span></p>
+          <h2 class="title" id="verdict">Scanning…</h2>
+          <ol id="log" class="log mono" aria-live="polite"></ol>
+        </div>
+      </div>
+      <div class="report-grid">
+        <article id="cIdentity" class="card rcard"></article>
+        <article id="cMoney" class="card rcard"></article>
+        <article id="cActivity" class="card rcard"></article>
+        <article id="cWho" class="card rcard"></article>
+        <article id="cFix" class="card rcard wide"></article>
+      </div>
+    </section>

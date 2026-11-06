@@ -5,6 +5,10 @@ import { defineSchema, str, u64 } from '@arkiv-network/sdk/schema';
 
 export const OBSERVATION_DAYS = 30;
 
+// Account that publishes the field-survey observations. Anyone can write
+// entities with this schema, so readers trust this publisher by default.
+export const PUBLISHER = '0x6D0622258Fdb25b8E7989AbC3F7D71D82dd65E09';
+
 // One entity = one observed (site → recipient) leak. Never contains an address.
 export const Observation = defineSchema('privacy-xray.observation', {
   site: str().indexed(), // eTLD+1 of the page, e.g. etherscan.io
