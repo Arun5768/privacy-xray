@@ -33,6 +33,13 @@ Existing tools either measure this in research settings or hide traffic without 
 3. **Shows proof** for each finding: recipient and company, category (analytics / RPC / error / other), where the address was hidden, how it was encoded, the script that sent it, a redacted snippet, and what happened on the network (delivered, blocked by the browser, e.g. Brave Shields, or failed), so a finding is never overstated.
 4. **Protect** (off by default) stops requests carrying your address before they leave the page, and blocks further data-carrying requests to recipients caught leaking. RPC providers are never blocked, so dApps keep working; instead the popup points to the EF's [Anon-RPC](https://ethereum.github.io/anon-rpc/).
 5. **Evidence report** exports the findings as Markdown or JSON, for users or for dApp teams auditing their own frontend.
+6. **Audit agent.** One click in the popup: the extension opens 9 popular crypto sites (explorers, portfolio trackers, NFT and DEX portfolios) in background tabs, each with a freshly generated **decoy address** that belongs to nobody, watches for 10 seconds who receives it, closes the tab, and shows a report. You learn which sites would leak your address without exposing it. Reproduce with `node test/audit.mjs`.
+7. **Guided onboarding.** On install, a 4-step wizard detects when you pin the extension, optionally sets a watched address, catches a live leak on the demo dApp, and sets up Protect.
+
+### On the website (no install)
+
+- **Scan** ([/scan](https://arun5768.github.io/privacy-xray/scan/)): paste an address or ENS name and get an exposure report: public name and linked profiles, balances and activity on Ethereum, Base, Arbitrum, Optimism and Polygon, and the registry's known leakers, with an exposure score and advice. It runs only when you press Run and says which public endpoints it contacts (PublicNode RPCs and Arkiv); ENS offchain lookups are disabled so no other gateways are contacted. This is the one feature that sends an address anywhere, and it's on the website, not in the extension.
+- **Registry** ([/registry](https://arun5768.github.io/privacy-xray/registry/)): look up a site's observed leaks, read live from Arkiv.
 
 ## Try it
 
@@ -62,6 +69,7 @@ Load `dist/` as an unpacked extension, open the dApp, connect the demo wallet, a
 npm test             # detector unit tests (encodings, redaction, no false positives, site logic)
 npm run e2e          # loads the extension in a throwaway Brave profile and runs the demo with Protect off and on
 node test/field-survey.mjs   # visits 8 real explorer / portfolio pages for a random address; writes research/field-test.md
+node test/audit.mjs          # runs the audit agent end to end and prints what it found
 ```
 
 `npm run e2e` expects the demo servers to be running and Brave at its default Windows path; change `BROWSER` in `test/e2e.mjs` for another Chromium browser. It passes when the tracker receives 3 leaks with Protect off, 0 with Protect on, and all 3 show as blocked.
@@ -98,9 +106,11 @@ Code map:
 | `src/inject.ts` | Page hook: address discovery, request checks, Protect |
 | `src/content.ts` | Bridge between page hook and extension |
 | `src/popup/` | Popup UI and report export |
-| `src/welcome/` | Welcome page opened on install |
+| `src/welcome/` | Onboarding wizard opened on install |
+| `src/audit/`, `src/shared/audit-sites.ts` | Audit agent report page and the sites it visits |
 | `src/icons/` | Logo (SVG) and icons; `node scripts/icons.mjs` renders the PNGs |
-| `docs/` | Website and demo dApp (GitHub Pages) |
+| `site/` | Website source: layout, pages, design system (`assets/`), Scan and Registry scripts; `scripts/site.mjs` builds it |
+| `docs/` | Built website and demo dApp, published by GitHub Pages |
 | `demo/serve.mjs` | Local servers for the dApp and the demo tracker |
 
 ## Arkiv registry
