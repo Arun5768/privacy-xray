@@ -10,32 +10,17 @@
   <link rel="stylesheet" href="../assets/app.css" />
 </head>
 <body data-page="scan">
-  <!-- Live status: reads only this browser's own environment; nothing is sent anywhere. -->
-  <div id="live" class="live idle"><span class="dot"></span><span id="liveText">Scanning this browser…</span></div>
+  <!-- IDE-style tab strip: one tab per section on this page, highlighted while you scroll. -->
+  <div class="tabs" id="tabs" aria-hidden="true"><span class="tab file">scan.page</span></div>
 
-  <header class="nav">
-    <div class="wrap nav-in">
-      <a class="logo" href="../" aria-label="0xRay home">
-        <svg class="eye" viewBox="0 0 128 128" aria-hidden="true">
-          <rect width="128" height="128" rx="30" fill="#0b0b12" />
-          <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#14141f" stroke="#f5f3ff" stroke-width="8" stroke-linejoin="round" />
-          <g class="pupil"><circle cx="64" cy="64" r="22" fill="#3cf0d4" /><circle cx="64" cy="64" r="9" fill="#0b0b12" /><circle cx="70" cy="57" r="4" fill="#fff" /></g>
-        </svg>
-        <span class="wordmark">0x<em>Ray</em></span>
-      </a>
-      <nav aria-label="Main">
-        <a data-nav="scan" href="../scan/">Scan</a>
-        <a data-nav="how" href="../how/">How it works</a>
-        <a data-nav="registry" href="../registry/">Registry</a>
-        <a data-nav="teams" href="../teams/">For teams</a>
-        <a href="../demo/">Demo</a>
-      </nav>
-      <a class="btn btn-lime small magnetic" href="../privacy-xray-extension.zip" download>Get 0xRay</a>
-    </div>
-  </header>
+  <!-- Inspector: a running log of what 0xRay checks. Local only. -->
+  <aside class="inspector" id="inspector" aria-label="Inspector log">
+    <div class="ins-head"><span>inspector.log <span class="dimtag">· sample stream</span></span><button id="insClose" class="ins-x" aria-label="Hide inspector">×</button></div>
+    <ol class="ins-body mono" id="insBody"></ol>
+  </aside>
 
-  <main>
-<section class="hero scan-hero">
+  <main class="page">
+<section class="hero scan-hero" data-tab="scan">
       <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
       <div class="wrap">
         <p class="kicker"><i></i>Exposure report · 10 seconds</p>
@@ -46,14 +31,14 @@
           <button class="btn btn-pink magnetic" type="submit">Run report <span class="arrow">→</span></button>
         </form>
         <p class="consent">
-          <b>What Run does:</b> read-only lookups on PublicNode's public RPCs (Ethereum, Base, Arbitrum, Optimism, Polygon) and Arkiv's public endpoint, so those services see the address you scan. Nothing is stored. Rather not? <button id="sample" class="linkish" type="button">Try it on vitalik.eth</button>, or use the extension, which makes no requests at all.
+          <b>What Run does:</b> read-only lookups on PublicNode's public RPCs (Ethereum, Base, Arbitrum, Optimism, Polygon) and Arkiv's public endpoint, so those services see the address you scan. Nothing is stored. Rather not? <button id="sample" class="linkish" type="button">Try it on vitalik.eth</button>, or use the extension, which makes no network requests of its own.
         </p>
         <p id="preNote" class="consent pre" hidden>Address filled in from the homepage. Press <b>Run report</b> when you're ready.</p>
       </div>
     </section>
 
-    <section id="report" class="wrap report" hidden>
-      <div class="report-top">
+    <section id="report" class="wrap report" data-tab="report" hidden>
+      <div class="report-top card">
         <div class="score">
           <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="track" /><circle id="ring" cx="60" cy="60" r="52" class="ring" /></svg>
           <div class="score-in"><b id="scoreNum">0</b><span>/100 exposure</span></div>
@@ -73,22 +58,45 @@
       </div>
     </section>
 
+
+    <footer class="foot">
+      <div class="wrap foot-in">
+        <div class="foot-brand">
+          <a class="logo" href="../" aria-label="0xRay home">
+            <img src="../img/logo.svg" width="44" height="44" alt="" />
+            <span class="wordmark big">0x<em>Ray</em></span>
+          </a>
+          <p>See who's watching your wallet. Built at ETHGlobal Mumbai 2026. MIT licensed.</p>
+        </div>
+        <div class="foot-cols">
+          <div><b>// product</b><a href="../scan/">Scan an address</a><a href="../how/">How it works</a><a href="../registry/">Leak registry</a><a href="../demo/">Demo dApp</a></div>
+          <div><b>// teams</b><a href="../teams/">Audit your dApp</a><a href="https://github.com/Arun5768/privacy-xray#crops">CROPS</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Field test</a></div>
+          <div><b>// code</b><a href="https://github.com/Arun5768/privacy-xray">GitHub</a><a href="../privacy-xray-extension.zip" download>Download</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/LICENSE">License</a></div>
+        </div>
+      </div>
+      <div class="wrap foot-note mono">No third-party fonts, scripts or trackers on this site. The Scan page contacts public endpoints only when you press Run, and says which.</div>
+    </footer>
   </main>
 
-  <footer class="foot">
-    <div class="wrap foot-in">
-      <div class="foot-brand">
-        <span class="wordmark big">0x<em>Ray</em></span>
-        <p>See who's watching your wallet. Built at ETHGlobal Mumbai 2026. MIT licensed.</p>
-      </div>
-      <div class="foot-cols">
-        <div><b>Product</b><a href="../scan/">Scan an address</a><a href="../how/">How it works</a><a href="../registry/">Leak registry</a><a href="../demo/">Demo dApp</a></div>
-        <div><b>Teams</b><a href="../teams/">Audit your dApp</a><a href="https://github.com/Arun5768/privacy-xray#crops">CROPS</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/research/field-test.md">Field test</a></div>
-        <div><b>Code</b><a href="https://github.com/Arun5768/privacy-xray">GitHub</a><a href="../privacy-xray-extension.zip" download>Download</a><a href="https://github.com/Arun5768/privacy-xray/blob/main/LICENSE">License</a></div>
-      </div>
+  <!-- Floating pill navigation -->
+  <nav class="pill" aria-label="Main">
+    <a class="pill-logo" href="../" aria-label="0xRay home">
+      <svg class="eye" viewBox="0 0 128 128" aria-hidden="true">
+        <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#06100f" stroke="#e9fffa" stroke-width="9" stroke-linejoin="round" />
+        <g class="pupil"><circle cx="64" cy="64" r="22" fill="#3cf0d4" /><circle cx="64" cy="64" r="9" fill="#06100f" /></g>
+      </svg>
+      <span>0xRay</span>
+    </a>
+    <div class="pill-links">
+      <a data-nav="scan" href="../scan/">Scan</a>
+      <a data-nav="how" href="../how/">How it works</a>
+      <a data-nav="registry" href="../registry/">Registry</a>
+      <a data-nav="teams" href="../teams/">Teams</a>
+      <a href="../demo/">Demo</a>
     </div>
-    <div class="wrap foot-note">No third-party fonts, scripts or trackers on this site. The Scan page contacts public endpoints only when you press Run, and says which.</div>
-  </footer>
+    <span id="live" class="pill-live idle" title="This browser"><i></i><span id="liveText">checking…</span></span>
+    <a class="pill-cta" href="../privacy-xray-extension.zip" download><b>+</b><span>Get 0xRay</span></a>
+  </nav>
 
   <script src="../assets/app.js"></script>
   <script src="scan.js"></script>
