@@ -1,8 +1,10 @@
-# Privacy X-Ray
+# 0xRay
+
+<img src="docs/img/logo.svg" width="72" alt="0xRay logo" />
 
 **See which companies a crypto app sends your wallet address to, with proof. Stop it in one click. Everything runs on your device.**
 
-Browser extension (Chrome, Brave and other Chromium browsers) built at **ETHGlobal Mumbai 2026**.
+Browser extension (Chrome, Brave and other Chromium browsers) built at **ETHGlobal Mumbai 2026**. The repository is called `privacy-xray` after the working title, Privacy X-Ray.
 
 - Website and live demo: https://arun5768.github.io/privacy-xray/
 - Download: https://arun5768.github.io/privacy-xray/privacy-xray-extension.zip
@@ -16,7 +18,7 @@ When you connect a wallet, the dApp's own JavaScript can send your address anywh
 - Crypto "wrench attacks" took more than $30M in H1 2026, and analysts link part of them to leaked holder identities ([Chainalysis](https://www.chainalysis.com/blog/violent-crypto-wrench-attacks-2026/)).
 - Under the EDPB's blockchain guidelines (02/2025, v2.0, July 2026), a wallet address linkable to a person is personal data, and hashing it doesn't change that ([EDPB](https://www.edpb.europa.eu/documents/guideline/guidelines-022025-on-processing-of-personal-data-through-blockchain_en)).
 
-Existing tools either measure this in research settings or hide traffic without showing what leaked. Privacy X-Ray shows ordinary users what is happening, live, on any dApp.
+Existing tools either measure this in research settings or hide traffic without showing what leaked. 0xRay shows ordinary users what is happening, live, on any dApp.
 
 **What we observed ourselves** ([`research/field-test.md`](research/field-test.md), reproducible with `node test/field-survey.mjs`): opening Etherscan's page for a freshly generated random address, the address was delivered to Google Analytics and to an ad host (`req.adx.ws`); on Blockscout, to Google Analytics. DeBank, Arkham and OKLink showed no third-party recipients in the same test. These are observations, not accusations: an address in a URL is normal for explorers, and the point is to make visible who receives it.
 
@@ -38,7 +40,7 @@ Existing tools either measure this in research settings or hide traffic without 
 
 1. Download the [extension zip](https://arun5768.github.io/privacy-xray/privacy-xray-extension.zip) and unzip it.
 2. Open `chrome://extensions` or `brave://extensions`, switch on **Developer mode**, click **Load unpacked**, pick the folder.
-3. Open the [live demo dApp](https://arun5768.github.io/privacy-xray/demo/), click **Use a throwaway demo wallet**, then click the X-Ray icon.
+3. Open the [live demo dApp](https://arun5768.github.io/privacy-xray/demo/), click **Use a throwaway demo wallet**, then click the 0xRay icon.
 
 The hosted demo's analytics script reports to `collect.demotrack.invalid`. `.invalid` is reserved (RFC 2606) and never resolves, so the requests leave the page but no real third party receives anything.
 
@@ -96,6 +98,8 @@ Code map:
 | `src/inject.ts` | Page hook: address discovery, request checks, Protect |
 | `src/content.ts` | Bridge between page hook and extension |
 | `src/popup/` | Popup UI and report export |
+| `src/welcome/` | Welcome page opened on install |
+| `src/icons/` | Logo (SVG) and icons; `node scripts/icons.mjs` renders the PNGs |
 | `docs/` | Website and demo dApp (GitHub Pages) |
 | `demo/serve.mjs` | Local servers for the dApp and the demo tracker |
 
