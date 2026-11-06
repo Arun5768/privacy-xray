@@ -133,7 +133,9 @@ import type { Needle } from './shared/types.ts';
     } catch {
       // never break the page
     }
-    return origFetch.apply(this, arguments as any);
+    // Always call the real fetch on window: some code calls fetch with an
+    // unusual `this`, which the native function rejects ("Illegal invocation").
+    return origFetch.apply(window, arguments as any);
   } as typeof fetch;
 
   if (navigator.sendBeacon) {
