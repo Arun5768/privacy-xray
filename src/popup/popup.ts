@@ -248,6 +248,7 @@ async function main() {
   });
   // Live counters while the popup is open.
   setInterval(() => void refresh(), 1000);
+  $('audit').addEventListener('click', () => chrome.tabs.create({ url: chrome.runtime.getURL('audit.html?start') }));
   $('export').addEventListener('click', () => save(report(), 'text/markdown', 'md'));
   $('exportJson').addEventListener('click', () => save(reportJson(), 'application/json', 'json'));
   $('clear').addEventListener('click', async () => {

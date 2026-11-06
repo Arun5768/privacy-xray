@@ -1,3 +1,5 @@
+@font-face { font-family: 'Bricolage'; src: url('fonts/bricolage.woff2') format('woff2'); font-weight: 200 800; }
+@font-face { font-family: 'JBMono'; src: url('fonts/jetbrains-mono.woff2') format('woff2'); font-weight: 100 800; }
 :root {
   --bg: #07090d;
   --card: #0e1218;
@@ -9,8 +11,8 @@
   --bad: #ff4d5e;
   --warn: #ffb547;
   --ok: #39f0d0;
-  --mono: ui-monospace, 'JetBrains Mono', 'Cascadia Code', Consolas, monospace;
-  --sans: system-ui, -apple-system, 'Segoe UI', Inter, sans-serif;
+  --mono: 'JBMono', ui-monospace, Consolas, monospace;
+  --sans: 'Bricolage', system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
 body {
@@ -130,3 +132,7 @@ button:focus-visible { outline: 2px solid var(--ray); outline-offset: 2px; }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes pop { from { transform: scale(0.8); } to { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+.audit-btn { display: grid; width: 100%; margin-top: 10px; padding: 11px 14px; text-align: left; border: 1px solid #8b6cff; border-radius: 12px; background: linear-gradient(120deg, rgb(139 108 255 / 0.22), rgb(255 79 163 / 0.14)); }
+.audit-btn b { font-size: 14px; }
+.audit-btn span { color: var(--muted); font-size: 11px; font-weight: 400; }
+.audit-btn:hover { border-color: #ff4fa3; }
