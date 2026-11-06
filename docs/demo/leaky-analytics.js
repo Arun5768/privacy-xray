@@ -14,16 +14,21 @@
   }
 
   const quiet = (p) => p?.catch?.(() => {});
+  // Lets the demo page narrate each step; real trackers don't announce themselves.
+  const announce = (what) => window.dispatchEvent(new CustomEvent('demotrack:sent', { detail: what }));
 
   window.DemoTrack = {
     async identify(address) {
       // Leak A: plain address in a query parameter
       quiet(fetch(`${T}/collect?event=wallet_connected&wallet=${address}`, { mode: 'no-cors', keepalive: true }));
+      announce('in plain text, in a URL');
       // Leak B: Base64-encoded JSON in a beacon body
       navigator.sendBeacon(`${T}/b`, btoa(JSON.stringify({ e: 'identify', wallet: address })));
+      announce('hidden in Base64, in a beacon');
       // Leak C: "anonymised" SHA-256 hash of the address
       const uid = await sha256Hex(address.toLowerCase());
       quiet(fetch(`${T}/id`, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ uid }) }));
+      announce('"anonymised" as a SHA-256 hash');
     },
   };
 })();
