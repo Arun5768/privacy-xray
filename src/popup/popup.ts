@@ -10,8 +10,19 @@ function esc(s: string | undefined): string {
   return (s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 }
 
+// Left the browser, or may have: everything not stopped by us or by the browser.
+const exposed = (l: Leak) => !l.blocked && l.outcome !== 'blocked-by-browser';
+
+function statusText(l: Leak): string {
+  if (l.blocked) return 'blocked by Privacy X-Ray before sending';
+  if (l.outcome === 'blocked-by-browser') return 'attempted; blocked by your browser (e.g. Shields, ad blocker)';
+  if (l.outcome === 'delivered') return 'delivered to the recipient';
+  if (l.outcome === 'failed') return 'left the page; delivery failed (network error)';
+  return 'sent';
+}
+
 function grade(leaks: Leak[]): string {
-  const open = leaks.filter((l) => !l.blocked);
+  const open = leaks.filter(exposed);
   if (!open.length) return 'A';
   const recipients = new Set(open.map((l) => l.recipientSite));
   const tracking = open.some((l) => l.category !== 'rpc');
@@ -32,7 +43,7 @@ function groupByRecipient(leaks: Leak[]): Map<string, Leak[]> {
 
 function render() {
   const { leaks, addresses, protect, pageUrl } = view;
-  const open = leaks.filter((l) => !l.blocked);
+  const open = leaks.filter(exposed);
   const recipients = groupByRecipient(leaks);
 
   const status = $('status');
@@ -45,7 +56,7 @@ function render() {
     status.textContent = `● ${open.length} leak${open.length > 1 ? 's' : ''} of your address sent to ${n} third part${n === 1 ? 'y' : 'ies'}`;
   } else if (leaks.length) {
     status.className = 'status';
-    status.textContent = `● Protected: ${leaks.length} leak${leaks.length > 1 ? 's' : ''} blocked before leaving this page`;
+    status.textContent = `● Protected: ${leaks.length} attempt${leaks.length > 1 ? 's' : ''} to send your address blocked`;
   } else {
     status.className = 'status';
     status.textContent = '● No third party has received your address on this page';
@@ -61,7 +72,7 @@ function render() {
     list.innerHTML = [...recipients.entries()]
       .map(([site, items]) => {
         const first = items[0];
-        const sent = items.filter((l) => !l.blocked).length;
+        const sent = items.filter(exposed).length;
         const tags = [
           `<span class="tag ${first.category}">${first.category}</span>`,
           ...new Set(items.map((l) => `<span class="tag">${esc(l.location)}</span>`)),
@@ -73,7 +84,7 @@ function render() {
               <div class="row"><span>Request</span><code>${esc(l.method)} ${esc(l.requestUrl)}</code></div>
               <div class="row"><span>Found in</span><code>${esc(l.location)} · ${esc(l.transform)}</code></div>
               ${l.initiatorScript ? `<div class="row"><span>Sent by</span><code>${esc(l.initiatorScript)}</code></div>` : ''}
-              <div class="row"><span>Status</span><code>${l.blocked ? 'blocked before sending' : 'sent'} · ${new Date(l.ts).toLocaleTimeString()}</code></div>
+              <div class="row"><span>Status</span><code>${esc(statusText(l))} · ${new Date(l.ts).toLocaleTimeString()}</code></div>
               <div class="snippet">${esc(l.snippet)}</div>
             </div>`,
           )
@@ -112,11 +123,11 @@ function report(): string {
     `- Extension version: ${chrome.runtime.getManifest().version}`,
     `- Generated: ${new Date().toISOString()}`,
     `- Grade: ${grade(leaks)}`,
-    `- Leaks: ${leaks.length} (${leaks.filter((l) => l.blocked).length} blocked)`,
+    `- Leaks: ${leaks.length} (${leaks.filter(exposed).length} exposed, ${leaks.filter((l) => !exposed(l)).length} stopped)`,
     ``,
     `| Recipient | Company | Category | Where | Encoding | Status |`,
     `|---|---|---|---|---|---|`,
-    ...leaks.map((l) => `| ${l.recipientHost} | ${l.company ?? ''} | ${l.category} | ${l.location} | ${l.transform} | ${l.blocked ? 'blocked' : 'sent'} |`),
+    ...leaks.map((l) => `| ${l.recipientHost} | ${l.company ?? ''} | ${l.category} | ${l.location} | ${l.transform} | ${statusText(l)} |`),
     ``,
     `## Evidence`,
     ...leaks.flatMap((l, i) => [

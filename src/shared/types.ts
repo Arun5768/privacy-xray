@@ -17,7 +17,11 @@ export type Leak = {
   transform: string; // e.g. "plain", "base64 → plain", "sha256(lowercase)"
   snippet: string; // redacted context around the match
   initiatorScript?: string;
-  blocked: boolean;
+  blocked: boolean; // stopped by Privacy X-Ray
+  // What happened on the network, when known: delivered to the server, stopped
+  // by the browser (e.g. Brave Shields, an ad blocker), or failed (DNS, offline).
+  outcome?: 'delivered' | 'blocked-by-browser' | 'failed';
+  requestId?: string;
   ts: number;
   addressRef: string; // redacted form, e.g. 0x12ab…9f4e
 };

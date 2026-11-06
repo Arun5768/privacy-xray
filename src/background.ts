@@ -40,9 +40,14 @@ function setAddresses(list: string[]) {
   persist();
 }
 
+// Left the browser, or may have: everything not stopped by us or by the browser.
+function isExposed(l: Leak): boolean {
+  return !l.blocked && l.outcome !== 'blocked-by-browser';
+}
+
 function updateBadge(tabId: number) {
   const leaks = state.leaks[tabId] ?? [];
-  const open = leaks.filter((l) => !l.blocked).length;
+  const open = leaks.filter(isExposed).length;
   const text = leaks.length ? String(leaks.length) : '';
   chrome.action.setBadgeText({ tabId, text }).catch(() => {});
   chrome.action.setBadgeBackgroundColor({ tabId, color: open ? '#E5484D' : '#30A46C' }).catch(() => {});
@@ -105,6 +110,7 @@ type Raw = {
   match: Match;
   blocked: boolean;
   initiatorScript?: string;
+  requestId?: string;
 };
 
 function record(r: Raw) {
@@ -127,6 +133,8 @@ function record(r: Raw) {
     snippet: r.match.snippet,
     initiatorScript: r.initiatorScript ?? hints.get(r.requestUrl)?.script,
     blocked: r.blocked,
+    requestId: r.requestId,
+    outcome: r.requestId ? pendingOutcomes.get(r.requestId) : undefined,
     ts: Date.now(),
     addressRef: redactAddress(r.match.address),
   };
@@ -189,11 +197,40 @@ chrome.webRequest.onBeforeRequest.addListener(
       const body = decodeBody(details.requestBody);
       const match = scan(details.url, needles, 'query') ?? scan(body, needles, 'body');
       if (!match) return;
-      record({ tabId: details.tabId, pageUrl, requestUrl: details.url, method: details.method, resourceType: details.type, body, match, blocked: false });
+      record({ tabId: details.tabId, pageUrl, requestUrl: details.url, method: details.method, resourceType: details.type, body, match, blocked: false, requestId: details.requestId });
     });
   },
   { urls: ['<all_urls>'] },
   ['requestBody'],
+);
+
+// ---- Outcomes -------------------------------------------------------------
+// A request we saw may still be stopped later by the browser itself (Brave
+// Shields, an ad blocker) or fail. Track that so the popup never overstates.
+
+const pendingOutcomes = new Map<string, Leak['outcome']>();
+
+function setOutcome(tabId: number, requestId: string, outcome: Leak['outcome']) {
+  if (tabId < 0) return;
+  void ready.then(() => {
+    const leak = state.leaks[tabId]?.find((l) => l.requestId === requestId);
+    if (!leak) {
+      // The scan may finish after the request does; remember briefly.
+      pendingOutcomes.set(requestId, outcome);
+      if (pendingOutcomes.size > 500) pendingOutcomes.delete(pendingOutcomes.keys().next().value!);
+      return;
+    }
+    leak.outcome = outcome;
+    updateBadge(tabId);
+    persist();
+    chrome.runtime.sendMessage({ type: 'leaks-changed', tabId }).catch(() => {});
+  });
+}
+
+chrome.webRequest.onCompleted.addListener((d) => setOutcome(d.tabId, d.requestId, 'delivered'), { urls: ['<all_urls>'] });
+chrome.webRequest.onErrorOccurred.addListener(
+  (d) => setOutcome(d.tabId, d.requestId, d.error === 'net::ERR_BLOCKED_BY_CLIENT' ? 'blocked-by-browser' : 'failed'),
+  { urls: ['<all_urls>'] },
 );
 
 chrome.webRequest.onBeforeSendHeaders.addListener(
