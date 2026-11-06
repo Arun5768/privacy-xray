@@ -2,6 +2,7 @@ import { buildNeedles, normalizeAddress, redactAddress, redactAll } from './shar
 import { scan } from './shared/detect.ts';
 import { classify, hostOf, siteOf } from './shared/catalog.ts';
 import type { Leak, LeakLocation, Match, Needle } from './shared/types.ts';
+import { AUDIT_SITES, type AuditSiteResult, type AuditState } from './shared/audit-sites.ts';
 
 // All state lives in memory and chrome.storage.session (RAM only, cleared when
 // the browser closes). Only the Protect switch is persisted to disk.
@@ -24,7 +25,7 @@ const ready = (async () => {
   state.leaks = s.leaks ?? {};
   state.addresses = s.addresses ?? [];
   state.protect = !!l.protect;
-  needles = buildNeedles(state.addresses);
+  rebuildNeedles();
   await syncRules();
 })();
 
@@ -36,10 +37,112 @@ function persist() {
   }, 200);
 }
 
+// Decoy addresses used by a running audit; watched like real ones, never shown as yours.
+let decoys: string[] = [];
+
+function rebuildNeedles() {
+  needles = buildNeedles([...state.addresses, ...decoys]);
+}
+
 function setAddresses(list: string[]) {
   state.addresses = [...new Set(list.map(normalizeAddress).filter((a): a is string => !!a))].slice(-MAX_ADDRESSES);
-  needles = buildNeedles(state.addresses);
+  rebuildNeedles();
   persist();
+}
+
+// ---- Audit agent ------------------------------------------------------------
+// Visits sites that put an address in the URL, each with a fresh random decoy,
+// in background tabs, and records who receives it. The user's own addresses are
+// never used.
+
+let audit: AuditState | null = null;
+const AUDIT_WATCH_MS = 10_000;
+
+function randomAddress(): string {
+  const b = crypto.getRandomValues(new Uint8Array(20));
+  return '0x' + [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
+}
+
+function waitForLoad(tabId: number, timeoutMs: number): Promise<void> {
+  return new Promise((resolve) => {
+    const done = () => {
+      clearTimeout(t);
+      chrome.tabs.onUpdated.removeListener(listener);
+      resolve();
+    };
+    const listener = (id: number, info: chrome.tabs.TabChangeInfo) => {
+      if (id === tabId && info.status === 'complete') done();
+    };
+    const t = setTimeout(done, timeoutMs);
+    chrome.tabs.onUpdated.addListener(listener);
+  });
+}
+
+function broadcastAudit() {
+  chrome.runtime.sendMessage({ type: 'audit:progress', audit }).catch(() => {});
+}
+
+async function runAudit() {
+  const decoy = randomAddress();
+  audit = {
+    running: true,
+    decoyRef: redactAddress(decoy),
+    startedAt: Date.now(),
+    sites: AUDIT_SITES.map((s) => ({ name: s.name, url: redactAll(s.url(decoy), buildNeedles([decoy])), status: 'queued', recipients: [] })),
+  };
+  decoys = [decoy];
+  rebuildNeedles();
+  broadcastAudit();
+  try {
+    for (const [i, site] of AUDIT_SITES.entries()) {
+      const row = audit.sites[i];
+      row.status = 'scanning';
+      broadcastAudit();
+      let tabId: number | undefined;
+      try {
+        // Chrome briefly refuses tab edits right after a tab closes; retry.
+        let tab: chrome.tabs.Tab | undefined;
+        for (let attempt = 0; !tab; attempt++) {
+          try {
+            tab = await chrome.tabs.create({ url: site.url(decoy), active: false });
+          } catch (e) {
+            if (attempt >= 5) throw e;
+            await new Promise((r) => setTimeout(r, 400));
+          }
+        }
+        tabId = tab.id!;
+        await waitForLoad(tabId, 20_000);
+        await new Promise((r) => setTimeout(r, AUDIT_WATCH_MS));
+        const found = (state.leaks[tabId] ?? []).filter((l) => l.addressRef === redactAddress(decoy));
+        const byHost = new Map<string, AuditSiteResult['recipients'][number]>();
+        for (const l of found) {
+          const r = byHost.get(l.recipientHost) ?? { host: l.recipientHost, company: l.company ?? l.recipientSite, category: l.category, encodings: [], outcome: 'unknown' };
+          if (!r.encodings.includes(l.transform)) r.encodings.push(l.transform);
+          if (l.blocked) r.outcome = 'blocked by 0xRay';
+          else if (l.outcome === 'delivered' || r.outcome === 'unknown') r.outcome = l.outcome ?? 'sent';
+          byHost.set(l.recipientHost, r);
+        }
+        row.recipients = [...byHost.values()];
+        row.status = 'done';
+      } catch (e) {
+        row.status = 'error';
+        row.error = (e as Error)?.message ?? String(e);
+      } finally {
+        if (tabId != null) {
+          await chrome.tabs.remove(tabId).catch(() => {});
+          delete state.leaks[tabId];
+        }
+      }
+      broadcastAudit();
+    }
+  } finally {
+    decoys = [];
+    rebuildNeedles();
+    audit.running = false;
+    audit.finishedAt = Date.now();
+    await chrome.storage.session.set({ audit });
+    broadcastAudit();
+  }
 }
 
 // Left the browser, or may have: everything not stopped by us or by the browser.
@@ -337,6 +440,13 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
         updateBadge(msg.tabId);
         persist();
         return reply({ ok: true });
+      case 'audit:start':
+        if (!audit?.running) void runAudit();
+        return reply({ ok: true });
+      case 'audit:get': {
+        if (!audit) audit = ((await chrome.storage.session.get('audit')).audit as AuditState | undefined) ?? null;
+        return reply({ audit });
+      }
       default:
         return reply(null);
     }
