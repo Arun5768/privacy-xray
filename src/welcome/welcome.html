@@ -5,66 +5,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Welcome to 0xRay</title>
   <link rel="icon" href="icons/icon-32.png" />
+  <link rel="stylesheet" href="app.css" />
   <link rel="stylesheet" href="welcome.css" />
 </head>
 <body>
-  <div class="grid-bg" aria-hidden="true"></div>
-  <main>
-    <header class="intro">
-      <div class="eye" id="eye" aria-hidden="true">
-        <svg viewBox="0 0 128 128">
-          <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#0e1218" stroke="#e8f1f2" stroke-width="7" stroke-linejoin="round"/>
-          <g id="pupil">
-            <circle cx="64" cy="64" r="22" fill="#39f0d0"/>
-            <circle cx="64" cy="64" r="9" fill="#07090d"/>
-            <circle cx="70" cy="57" r="4" fill="#fff"/>
-          </g>
-        </svg>
-        <span class="beam"></span>
-      </div>
-      <p class="kicker">Installed</p>
-      <h1><span class="word">0xRay</span> <span class="word">is</span> <span class="word">watching</span> <span class="word accent">the&nbsp;watchers.</span></h1>
-      <p class="lede">From now on, every request a crypto app sends to another company is checked for your wallet address. Three steps and you're set.</p>
+  <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <main class="wiz">
+    <header class="wiz-head">
+      <svg class="big-eye" viewBox="0 0 128 128" aria-hidden="true">
+        <path d="M14 64 C34 28 94 28 114 64 C94 100 34 100 14 64 Z" fill="#14141f" stroke="#f5f3ff" stroke-width="7" stroke-linejoin="round" />
+        <g class="pupil"><circle cx="64" cy="64" r="22" fill="#3cf0d4" /><circle cx="64" cy="64" r="9" fill="#0b0b12" /><circle cx="70" cy="57" r="4" fill="#fff" /></g>
+      </svg>
+      <h1 class="display words">0xRay is <em class="lime">on.</em></h1>
+      <p class="lede">Four quick steps and you'll see your first leak. About a minute.</p>
     </header>
 
-    <ol class="steps">
-      <li class="step" style="--i:0">
-        <span class="n">01</span>
-        <div>
-          <h2>Pin 0xRay to your toolbar</h2>
-          <p>Click the puzzle-piece icon, then the pin next to 0xRay. Its badge turns red the moment a page sends your address somewhere.</p>
-          <div class="toolbar" aria-hidden="true">
-            <span class="omni"></span>
-            <span class="puzzle">🧩</span>
-            <span class="pin"><img src="icons/icon-32.png" alt="" /><b class="badge">3</b></span>
-          </div>
-        </div>
-      </li>
-      <li class="step" style="--i:1">
-        <span class="n">02</span>
-        <div>
-          <h2>Watch it catch a leak</h2>
-          <p>Open the demo dApp, connect the throwaway demo wallet, then click the 0xRay icon. You'll see three leaks: plain, Base64 and a "hashed" one, with proof for each.</p>
-          <a class="btn" href="https://arun5768.github.io/privacy-xray/demo/" target="_blank" rel="noopener">Open the demo dApp →</a>
-        </div>
-      </li>
-      <li class="step" style="--i:2">
-        <span class="n">03</span>
-        <div>
-          <h2>Use crypto like normal</h2>
-          <p>Connect your wallet anywhere as usual. Turn on <b>Protect</b> in the popup to stop requests carrying your address. RPC providers are never blocked, so dApps keep working.</p>
-        </div>
-      </li>
+    <ol class="rail" aria-label="Setup progress">
+      <li data-step="1"><b>1</b><span>Pin</span></li>
+      <li data-step="2"><b>2</b><span>Address</span></li>
+      <li data-step="3"><b>3</b><span>First leak</span></li>
+      <li data-step="4"><b>4</b><span>Protect</span></li>
     </ol>
 
-    <section class="promise">
-      <h3>Our promise</h3>
-      <ul>
-        <li><b>Nothing leaves your device.</b> 0xRay makes no network requests of its own: no servers, no analytics, no account.</li>
-        <li><b>Never touches your keys.</b> It only reads what pages send; it can't sign or move anything.</li>
-        <li><b>Open source.</b> MIT licensed; read every line on <a href="https://github.com/Arun5768/privacy-xray" target="_blank" rel="noopener">GitHub</a>.</li>
-      </ul>
+    <section class="panel" data-panel="1">
+      <h2>Pin 0xRay to your toolbar</h2>
+      <p>Click the <b>puzzle-piece</b> icon at the top right of your browser, then the <b>pin</b> next to 0xRay. Its badge turns red the moment a page sends your address somewhere.</p>
+      <div class="toolbar" aria-hidden="true"><span class="omni"></span><span class="puzzle">⧉</span><span class="pin"><img src="icons/icon-32.png" alt="" /><b class="badge">3</b></span></div>
+      <p id="pinStatus" class="status mono">Waiting for you to pin it…</p>
+      <div class="row"><button class="btn btn-lime" data-next="2">Next <span class="arrow">→</span></button><button class="btn btn-ghost small" data-next="2">Skip</button></div>
     </section>
+
+    <section class="panel" data-panel="2" hidden>
+      <h2>Which address should 0xRay watch?</h2>
+      <p>It learns your address automatically when you connect a wallet to a site. You can also add one now. It stays in this browser's memory only.</p>
+      <form id="addrForm" class="field">
+        <input id="addr" placeholder="0x… (optional)" autocomplete="off" spellcheck="false" aria-label="Address to watch" />
+        <button class="btn btn-lime" type="submit">Watch</button>
+      </form>
+      <p id="addrStatus" class="status mono"></p>
+      <div class="row"><button class="btn btn-lime" data-next="3">Next <span class="arrow">→</span></button><button class="btn btn-ghost small" data-next="3">Learn it when I connect</button></div>
+    </section>
+
+    <section class="panel" data-panel="3" hidden>
+      <h2>Catch your first leak</h2>
+      <p>Open our deliberately leaky demo dApp, click <b>Use a throwaway demo wallet</b>, and come back here. This page lights up when 0xRay catches it.</p>
+      <div class="row"><button id="openDemo" class="btn btn-pink">Open the demo dApp <span class="arrow">↗</span></button></div>
+      <div id="catch" class="catch-box"><span class="radar"></span><span id="catchText" class="mono">Listening for leaks…</span></div>
+      <div class="row"><button class="btn btn-lime" data-next="4">Next <span class="arrow">→</span></button><button class="btn btn-ghost small" data-next="4">Skip</button></div>
+    </section>
+
+    <section class="panel" data-panel="4" hidden>
+      <h2>Block or just watch?</h2>
+      <p>With <b>Protect</b> on, requests carrying your address are stopped before they leave the page. RPC providers are never blocked, so dApps keep working. You can change this any time in the popup.</p>
+      <div class="choices">
+        <button class="choice" data-protect="false"><b>Just show me</b><span>See every leak, block nothing.</span></button>
+        <button class="choice" data-protect="true"><b>Protect me</b><span>Block requests that carry my address.</span></button>
+      </div>
+      <div class="finish" id="finish" hidden>
+        <h3>You're set. <em class="lime">Now see the big picture.</em></h3>
+        <p>The audit agent checks 9 popular crypto sites with a decoy address and shows which ones hand addresses to trackers.</p>
+        <div class="row"><button id="runAudit" class="btn btn-lime">Run the audit agent <span class="arrow">→</span></button></div>
+      </div>
+    </section>
+
+    <footer class="promise mono">No servers · no analytics · never touches your keys · <a href="https://github.com/Arun5768/privacy-xray" target="_blank" rel="noopener">open source</a></footer>
   </main>
   <script src="welcome.js"></script>
 </body>
