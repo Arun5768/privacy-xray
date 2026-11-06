@@ -1,6 +1,8 @@
 # Arkiv schema
 
 Network: Arkiv testnet **rabdi** (chain ID 7794095, RPC `https://rpc.rabdi.db-chain.testnet.arkiv.network`).
+The schema name keeps the project's working title (`privacy-xray`) because entities are already published under it.
+
 Defined in [`src/shared/arkiv.ts`](../src/shared/arkiv.ts), shared by the publisher and the website.
 
 ## Entity: `privacy-xray.observation`
