@@ -99,13 +99,40 @@ Code map:
 | `docs/` | Website and demo dApp (GitHub Pages) |
 | `demo/serve.mjs` | Local servers for the dApp and the demo tracker |
 
+## Arkiv registry
+
+A public, expiring record of observed leaks, stored on Arkiv's testnet (rabdi, chain ID 7794095), so anyone can check a site before connecting: https://arun5768.github.io/privacy-xray/registry/
+
+- **Write:** `node test/field-survey.mjs` records which third parties receive a random address on real sites; `npm run publish:arkiv` publishes each observation as a `privacy-xray.observation` entity (domains, category, encoding, outcome, date; never an address) that expires after 30 days.
+- **Read:** the registry page queries Arkiv live from the visitor's browser and shows a site's observations, newest first.
+- **The extension never contacts Arkiv.** Its zero-network-requests promise is unchanged; publishing is a separate, explicit step.
+
+Publisher wallet (wrote every entity): `0x6D0622258Fdb25b8E7989AbC3F7D71D82dd65E09` ([explorer](https://rabdi.explorer.arkiv.network/address/0x6D0622258Fdb25b8E7989AbC3F7D71D82dd65E09))
+
+Query you can run (Node 22+, after `npm install`):
+
+```bash
+node --input-type=module -e "
+import { createPublicClient } from '@arkiv-network/sdk';
+import { rabdi } from '@arkiv-network/sdk/chains';
+import { eq } from '@arkiv-network/sdk/query';
+import { http } from 'viem';
+const c = createPublicClient({ chain: rabdi({ accessKey: '' }), transport: http() });
+const r = await c.select().where(eq('arkiv.schema', 'privacy-xray.observation'))
+  .ownedBy('0x6D0622258Fdb25b8E7989AbC3F7D71D82dd65E09').limit(20).fetch();
+for (const e of r.entities) console.log(e.\$attributes.site?.value, '→', e.\$attributes.recipientHost?.value, e.\$attributes.outcome?.value);
+"
+```
+
+Published entities and transactions: [`arkiv/published.md`](arkiv/published.md). Details in [`arkiv/`](arkiv/): [schema](arkiv/schema.md), [why Arkiv](arkiv/why-arkiv.md), [how we use it](arkiv/how-you-use-arkiv.md), [reach](arkiv/reach.md), [friction log](arkiv/friction.md).
+
 ## CROPS
 
 **C — Censorship resistant.** No server, domain, relayer or account. The extension runs entirely from its own files, so there is nothing to take down or block. The website is only a convenience; the extension builds and runs from this repo alone.
 
 **O — Open source.** MIT licensed. `npm install && npm run build` produces the exact extension in `dist/`; the downloadable zip is built by `npm run package` from the same source.
 
-**P — Private.** All analysis happens in the browser. The extension makes no network requests of its own: no analytics, no remote code, no CDN imports (all libraries are bundled). Watched addresses are kept in `chrome.storage.session`, which lives in memory and is cleared when the browser closes. Stored findings and exports contain only redacted addresses (`0x5290…9ee7`) and truncated hashes. The only setting written to disk is the Protect switch. Addresses typed into the popup are never passed to web pages.
+**P — Private.** All analysis happens in the browser. The extension makes no network requests of its own: no analytics, no remote code, no CDN imports (all libraries are bundled). Watched addresses are kept in `chrome.storage.session`, which lives in memory and is cleared when the browser closes. Stored findings and exports contain only redacted addresses (`0x5290…9ee7`) and truncated hashes. The only setting written to disk is the Protect switch. Addresses typed into the popup are never passed to web pages. The leak registry is separate from the extension: the registry web page reads from Arkiv in your browser, and the published observations come from a survey with a random address, never from users.
 
 **S — Secure.** Never requests, reads or stores private keys or seed phrases, and never signs anything. Observation is read-only; blocking is opt-in. Trust assumptions and permissions:
 
@@ -132,9 +159,10 @@ All code was written during the hackathon (7 November 2026, IST), starting from 
 
 The project was built with **Claude Code** (Anthropic's coding agent) as the main implementer, directed by the team. The team chose the problem, wrote the product requirements (`research/PRD.md`), made the scoping and design decisions, and reviewed and tested the results. Claude Code did the research summaries, reviewed the PRD (`research/review.md`), and wrote most of the code, tests and website. Every claim in this README is backed by the tests, the e2e script or the cited sources.
 
-## Prize track
+## Prize tracks
 
-EF — Best CROPS App.
+- EF: Best CROPS App
+- Arkiv: Build on Arkiv, from scratch
 
 ## License
 
