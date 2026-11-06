@@ -58,6 +58,17 @@
       <div class="fact"><b>GDPR</b><span>a linkable wallet address is personal data, even when hashed<sup><a href="#src4">4</a></sup></span></div>
     </section>
 
+    <section class="wrap section seen">
+      <h2>What we saw on real sites</h2>
+      <p>We generated a random address that belongs to nobody and opened its page on popular explorers and portfolio trackers, with X-Ray watching.</p>
+      <ul>
+        <li><b>Etherscan:</b> the address was delivered to <b>Google Analytics</b> and to an ad host, <code>req.adx.ws</code>.</li>
+        <li><b>Blockscout:</b> delivered to <b>Google Analytics</b>.</li>
+        <li><b>DeBank, Arkham, OKLink:</b> no third-party recipients observed.</li>
+      </ul>
+      <p class="fine">Observations, not accusations: an address in a URL is normal for explorers. <a href="https://github.com/arun5768/privacy-xray/blob/main/research/field-test.md">Full results and method</a>, reproducible with one command.</p>
+    </section>
+
     <section id="how" class="wrap section">
       <h2>How it works</h2>
       <ol class="steps">
