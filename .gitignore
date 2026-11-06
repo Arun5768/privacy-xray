@@ -7,3 +7,4 @@ test/e2e-*.png
 .env
 test/welcome.png
 test/audit.png
+test/e2e-welcome.png

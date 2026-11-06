@@ -55,6 +55,16 @@ try {
     return { log, view, ms: Date.now() - t0 };
   }
 
+  // The onboarding wizard opens by itself on install.
+  const welcome = await browser.waitForTarget((t) => t.url().endsWith('/welcome.html'), { timeout: 10000 }).catch(() => null);
+  if (welcome) {
+    const wp = await welcome.page();
+    await wp.setViewport({ width: 1100, height: 1000 });
+    await sleep(1500);
+    await wp.screenshot({ path: 'test/e2e-welcome.png' });
+    console.log('welcome wizard opened on install');
+  }
+
   // First-run popup, before any address is known.
   const first = await browser.newPage();
   await first.setViewport({ width: 400, height: 600, deviceScaleFactor: 2 });
