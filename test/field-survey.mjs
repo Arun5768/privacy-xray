@@ -3,7 +3,7 @@
 // belongs to nobody, in a throwaway Brave profile. Writes research/field-test.md.
 import puppeteer from 'puppeteer-core';
 import { getDomain } from 'tldts';
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -25,10 +25,11 @@ const SITES = [
   ['OKLink', `https://www.oklink.com/eth/address/${ADDR}`],
 ];
 
+const profile = mkdtempSync(join(tmpdir(), 'pxr-field-'));
 const browser = await puppeteer.launch({
   executablePath: BROWSER,
   headless: false,
-  userDataDir: mkdtempSync(join(tmpdir(), 'pxr-field-')),
+  userDataDir: profile,
   args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`, '--no-first-run', '--window-size=1280,900'],
 });
 
@@ -63,6 +64,7 @@ try {
   }
 } finally {
   await browser.close();
+  rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
 }
 
 // Machine-readable copy for the Arkiv publisher (scripts/publish-arkiv.ts). No addresses.

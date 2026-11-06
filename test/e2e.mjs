@@ -1,7 +1,7 @@
 // End-to-end check: load the extension in a throwaway Brave profile, run the demo
 // dApp with Protect off and on, and compare what the tracker server received.
 import puppeteer from 'puppeteer-core';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,10 +11,11 @@ const BROWSER = 'C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const trackerLog = async () => (await fetch('http://127.0.0.1:5174/log')).json();
 
+const profile = mkdtempSync(join(tmpdir(), 'pxr-'));
 const browser = await puppeteer.launch({
   executablePath: BROWSER,
   headless: false,
-  userDataDir: mkdtempSync(join(tmpdir(), 'pxr-')),
+  userDataDir: profile,
   args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`, '--no-first-run', '--window-size=1200,800'],
 });
 
@@ -46,12 +47,20 @@ try {
     const shot = await browser.newPage();
     await shot.setViewport({ width: 400, height: 600, deviceScaleFactor: 2 });
     await shot.goto(`chrome-extension://${extId}/popup.html?tab=${tabId}`);
-    await shot.evaluate(() => document.querySelector('details')?.setAttribute('open', ''));
+    await shot.evaluate(() => document.querySelector('details.recipient')?.setAttribute('open', ''));
     await sleep(300);
     await shot.screenshot({ path: `test/e2e-popup-${label.includes('ON') ? 'protect-on' : 'protect-off'}.png`, fullPage: true });
     await shot.close();
     return { log, view, ms: Date.now() - t0 };
   }
+
+  // First-run popup, before any address is known.
+  const first = await browser.newPage();
+  await first.setViewport({ width: 400, height: 600, deviceScaleFactor: 2 });
+  await first.goto(`chrome-extension://${extId}/popup.html?tab=1`);
+  await sleep(300);
+  await first.screenshot({ path: 'test/e2e-popup-first-run.png', fullPage: true });
+  await first.close();
 
   const off = await runOnce('Protect OFF');
   await call({ type: 'setProtect', on: true });
@@ -64,4 +73,6 @@ try {
   console.log(`\nRESULT: ${ok ? 'PASS' : 'FAIL'}`);
 } finally {
   await browser.close();
+  // Throwaway profile: delete it so repeated runs don't fill the disk.
+  rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
 }
