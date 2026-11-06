@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SwapDemo: example dApp</title>
+  <link rel="icon" href="../favicon.png" />
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; background: #f6f4ef; color: #16140f; font: 15px/1.5 system-ui, 'Segoe UI', sans-serif; }
@@ -37,12 +38,12 @@
   </style>
 </head>
 <body>
-  <div id="xray" class="xray">Checking for Privacy X-Ray…</div>
+  <div id="xray" class="xray">Checking for 0xRay…</div>
 
   <main>
     <section class="card">
       <h1>SwapDemo</h1>
-      <p>An ordinary-looking dApp with a third-party analytics script, built to show what Privacy X-Ray catches.</p>
+      <p>An ordinary-looking dApp with a third-party analytics script, built to show what 0xRay catches.</p>
 
       <button id="demoWallet" class="primary">Use a throwaway demo wallet</button>
       <div class="small">Recommended. No extension, no signature, a fixed address that belongs to nobody.</div>
@@ -60,7 +61,7 @@
     </section>
   </main>
 
-  <p class="note">Demo for <a href="../">Privacy X-Ray</a>. The analytics script is deliberately leaky. On the hosted version it reports to <code>collect.demotrack.invalid</code>, a domain that can't exist, so nothing reaches a real third party.</p>
+  <p class="note">Demo for <a href="../">0xRay</a>. The analytics script is deliberately leaky. On the hosted version it reports to <code>collect.demotrack.invalid</code>, a domain that can't exist, so nothing reaches a real third party.</p>
 
   <script>
     const $ = (id) => document.getElementById(id);
@@ -83,10 +84,10 @@
       const bar = $('xray');
       if (window.__pxrInstalled) {
         bar.className = 'xray on';
-        bar.textContent = 'Privacy X-Ray is active. Connect, then click its toolbar icon to see what it caught.';
+        bar.textContent = '0xRay is active. Connect, then click its toolbar icon to see what it caught.';
       } else {
         bar.className = 'xray off';
-        bar.innerHTML = 'Privacy X-Ray is not installed in this browser, so nothing will tell you where your address goes. <a href="../#install">Install it</a>';
+        bar.innerHTML = '0xRay is not installed in this browser, so nothing will tell you where your address goes. <a href="../#install">Install it</a>';
       }
     }, 300);
 
@@ -180,8 +181,8 @@
         log('DemoTrack is now sending your address to its server in 3 ways:');
         await window.DemoTrack.identify(address);
         log(window.__pxrInstalled
-          ? 'Done. Click the Privacy X-Ray icon in your toolbar to see each leak, with proof.'
-          : 'Done. Without Privacy X-Ray, nothing on your screen tells you this happened.', 'ok');
+          ? 'Done. Click the 0xRay icon in your toolbar to see each leak, with proof.'
+          : 'Done. Without 0xRay, nothing on your screen tells you this happened.', 'ok');
       } catch (e) {
         const msg = e?.code === 4001 ? 'You declined the connection in your wallet.' : e?.message || String(e);
         log(`Couldn't connect: ${msg}`, 'bad');
