@@ -23,9 +23,21 @@ const options = {
   logLevel: 'info',
 };
 
+// Website registry page (reads from Arkiv); published from docs/ by GitHub Pages.
+const site = {
+  entryPoints: { registry: 'docs/registry/registry.ts' },
+  outdir: 'docs/registry',
+  bundle: true,
+  format: 'iife',
+  target: 'es2022',
+  minify: true,
+  logLevel: 'info',
+};
+
 if (watch) {
-  const ctx = await esbuild.context(options);
-  await ctx.watch();
+  await (await esbuild.context(options)).watch();
+  await (await esbuild.context(site)).watch();
 } else {
   await esbuild.build(options);
+  await esbuild.build(site);
 }

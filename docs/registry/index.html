@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leak Registry · Privacy X-Ray</title>
+  <meta name="description" content="Look up which companies a crypto site was observed sending wallet addresses to. Read live from Arkiv." />
+  <link rel="stylesheet" href="../site.css" />
+  <style>
+    .reg { padding-top: 32px; }
+    .reg form { display: flex; gap: 12px; flex-wrap: wrap; margin: 24px 0 8px; }
+    .reg input { flex: 1; min-width: 220px; padding: 12px 14px; border: 2px solid var(--ink); border-radius: 6px; background: var(--card); color: var(--ink); font: 16px var(--mono); }
+    .reg button { cursor: pointer; font: inherit; }
+    .muted, #status { color: var(--muted); font-size: 14px; }
+    #status { font-family: var(--mono); margin: 8px 0 24px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    td code { border: 0; padding: 0; background: none; font-size: 12px; color: var(--muted); }
+    .about { margin-top: 48px; color: var(--muted); font-size: 15px; max-width: 48em; }
+    .about code { font-size: 12px; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <header class="nav wrap">
+    <a class="logo" href="../">PRIVACY X-RAY</a>
+    <nav>
+      <a href="../#how">How it works</a>
+      <a href="../demo/">Demo</a>
+      <a href="https://github.com/arun5768/privacy-xray">GitHub</a>
+      <a class="btn small" href="../privacy-xray-extension.zip" download>Download</a>
+    </nav>
+  </header>
+
+  <main class="wrap reg">
+    <p class="eyebrow">Public registry · stored on Arkiv</p>
+    <h1>Check a site before you connect.</h1>
+    <p class="lede">Look up which third parties a crypto site was observed sending a wallet address to. Every row is read live from the Arkiv network, not from our server, and expires after 30 days so it only shows recent behaviour.</p>
+
+    <form id="form">
+      <input id="site" placeholder="etherscan.io" autocomplete="off" spellcheck="false" aria-label="Site to look up" />
+      <button class="btn primary" type="submit">Look up</button>
+    </form>
+    <div id="status"></div>
+
+    <h2 id="heading"></h2>
+    <div id="results" class="table-wrap"></div>
+
+    <section class="about">
+      <h3>How this registry works</h3>
+      <p>Observations come from Privacy X-Ray's field survey (<code>test/field-survey.mjs</code>), which opens a site for a randomly generated address that belongs to nobody and records which third parties receive it. They are published as Arkiv entities with the schema <code>privacy-xray.observation</code>: site, recipient, category, where the address was found, its encoding, the outcome and the date. No wallet address is ever published.</p>
+      <p>Anyone can write entities with this schema, so this page shows only those published by the Privacy X-Ray survey account <code id="publisher"></code>. Observations are not accusations: an address in a URL is normal for explorers; the registry makes visible who receives it.</p>
+      <p>The browser extension itself never contacts Arkiv or any other server. This page does, from your browser, using Arkiv's public endpoint.</p>
+    </section>
+  </main>
+
+  <footer class="wrap foot">
+    <span>Privacy X-Ray · built at ETHGlobal Mumbai 2026 · MIT</span>
+    <span>This page talks only to Arkiv's public testnet endpoint.</span>
+  </footer>
+  <script src="registry.js"></script>
+</body>
+</html>
