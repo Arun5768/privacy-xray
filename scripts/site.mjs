@@ -31,8 +31,9 @@ mkdirSync('docs/assets/fonts', { recursive: true });
 cpSync('site/assets/app.css', 'docs/assets/app.css');
 cpSync('site/assets/app.js', 'docs/assets/app.js');
 for (const [from, to] of [
-  ['@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2', 'bricolage.woff2'],
-  ['@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2', 'instrument-serif-italic.woff2'],
+  ['@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2', 'space-grotesk.woff2'],
+  ['@fontsource/pixelify-sans/files/pixelify-sans-latin-500-normal.woff2', 'pixelify-500.woff2'],
+  ['@fontsource/pixelify-sans/files/pixelify-sans-latin-700-normal.woff2', 'pixelify-700.woff2'],
   ['@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2', 'jetbrains-mono.woff2'],
 ]) {
   cpSync(join('node_modules', from), join('docs/assets/fonts', to));
