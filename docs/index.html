@@ -34,21 +34,20 @@
           <a class="btn" href="demo/">Try the live demo →</a>
         </div>
         <p class="fine">Chrome, Brave and other Chromium browsers. Load unpacked in two minutes. <a href="#install">How to install</a></p>
+
+        <form class="check" action="registry/" method="get">
+          <label for="checkSite">Check a site before you connect</label>
+          <div class="check-row">
+            <input id="checkSite" name="site" placeholder="etherscan.io" autocomplete="off" spellcheck="false" required />
+            <button class="btn small" type="submit">Check</button>
+          </div>
+          <span class="fine">Looks the site up in our public leak registry, stored on Arkiv.</span>
+        </form>
       </div>
 
-      <figure class="popup" aria-label="Example report from the demo dApp">
-        <div class="p-status">● 3 leaks of your address sent to 1 third party</div>
-        <div class="p-top"><span class="p-brand">PRIVACY X-RAY</span><span class="p-grade">D</span></div>
-        <div class="p-page">localhost:5173</div>
-        <div class="p-card">
-          <div class="p-row"><div><b>DemoTrack Analytics</b><small>127.0.0.1</small></div><span class="p-count">3×</span></div>
-          <div class="p-tags"><span class="t an">analytics</span><span class="t">query</span><span class="t">body</span><span class="t sent">sent</span></div>
-          <div class="p-proof"><span>Found in</span><code>body · base64 → plain</code></div>
-          <div class="p-proof"><span>Found in</span><code>body · sha256(lowercase)</code></div>
-          <div class="p-proof"><span>Sent by</span><code>127.0.0.1:5174/leaky-analytics.js</code></div>
-        </div>
-        <div class="p-switch"><span class="sw"></span><b>Protect</b></div>
-        <figcaption>Real output from our demo dApp. Addresses are always shown redacted.</figcaption>
+      <figure class="shot">
+        <img src="img/popup-leaks.png" width="400" height="995" alt="Privacy X-Ray popup: 3 leaks of your address sent to DemoTrack Analytics, with the request, encoding and sending script for each" />
+        <figcaption>The real extension, after connecting to our demo dApp. Addresses are always shown redacted.</figcaption>
       </figure>
     </section>
 
@@ -73,9 +72,9 @@
     <section id="how" class="wrap section">
       <h2>How it works</h2>
       <ol class="steps">
-        <li><span class="n">1</span><h3>Connect as usual</h3><p>Use any dApp. When your wallet hands the page your address, X-Ray learns it, on your device only. You can also paste an address to watch.</p></li>
-        <li><span class="n">2</span><h3>See every leak, with proof</h3><p>Every request leaving the page is checked for your address, including disguised forms: checksummed, Base64, URL-encoded, and SHA-256, Keccak, SHA-1 or MD5 hashes. Each finding shows the recipient, where it was hidden and which script sent it.</p></li>
-        <li><span class="n">3</span><h3>Stop it in one click</h3><p>Turn on <b>Protect</b> and requests carrying your address are stopped before they leave the page. RPC providers are never blocked, so dApps keep working.</p></li>
+        <li><span class="n">1</span><h3>Connect as usual</h3><p>Use any dApp. When your wallet hands the page your address, X-Ray learns it, on your device only. You can also paste an address to watch.</p><img src="img/popup-first-run.png" width="400" height="600" loading="lazy" alt="First run: the popup explains the three steps and waits for an address" /></li>
+        <li><span class="n">2</span><h3>See every leak, with proof</h3><p>Every request to another company is checked for your address, including disguised forms: checksummed, Base64, URL-encoded, and SHA-256, Keccak, SHA-1 or MD5 hashes. Each finding shows the recipient, where it was hidden and which script sent it.</p><img src="img/popup-leaks.png" width="400" height="995" loading="lazy" alt="Leaks found: requests checked, recipients, and proof for each leak" /></li>
+        <li><span class="n">3</span><h3>Stop it in one click</h3><p>Turn on <b>Protect</b> and requests carrying your address are stopped before they leave the page. RPC providers are never blocked, so dApps keep working.</p><img src="img/popup-protected.png" width="400" height="1031" loading="lazy" alt="Protect on: all three attempts blocked, grade A" /></li>
       </ol>
     </section>
 

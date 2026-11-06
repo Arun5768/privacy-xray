@@ -50,27 +50,6 @@ h1 { margin: 0; font-size: clamp(42px, 6vw, 72px); line-height: 1.02; letter-spa
 .cta { display: flex; gap: 16px; flex-wrap: wrap; }
 .fine { margin-top: 16px; font-size: 14px; color: var(--muted); }
 
-.popup { margin: 0; width: 100%; max-width: 380px; justify-self: end; background: var(--bg); border: 2px solid var(--ink); border-radius: 10px; box-shadow: 10px 10px 0 var(--ink); overflow: hidden; font-size: 13px; }
-.p-status { padding: 7px 12px; background: var(--bad); color: #fff; font: 600 11px var(--mono); }
-.p-top { display: flex; justify-content: space-between; align-items: center; padding: 12px 12px 0; }
-.p-brand { font: 800 13px var(--mono); letter-spacing: 0.08em; }
-.p-grade { padding: 2px 8px; border: 2px solid var(--ink); font: 800 14px var(--mono); box-shadow: 2px 2px 0 var(--ink); background: var(--card); }
-.p-page { padding: 2px 12px 8px; color: var(--muted); font: 11px var(--mono); }
-.p-card { margin: 0 12px; padding: 10px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; }
-.p-row { display: flex; justify-content: space-between; }
-.p-row small { display: block; color: var(--muted); font: 11px var(--mono); }
-.p-count { color: var(--bad); font: 700 12px var(--mono); }
-.p-tags { display: flex; gap: 5px; margin: 6px 0; }
-.t { padding: 0 6px; border-radius: 3px; background: var(--line); font: 600 10px/1.7 var(--mono); text-transform: uppercase; }
-.t.an { background: #ffe1d6; color: #8a2a06; }
-.t.sent { background: #fde0e1; color: #8c1b1f; }
-.p-proof { display: grid; grid-template-columns: 62px 1fr; gap: 6px; padding-top: 5px; border-top: 1px dashed var(--line); margin-top: 5px; }
-.p-proof span { color: var(--muted); }
-.p-proof code { border: 0; padding: 0; background: none; font-size: 11px; word-break: break-all; }
-.p-switch { display: flex; gap: 10px; align-items: center; margin: 10px 12px 12px; padding: 8px 10px; border: 2px solid var(--ink); border-radius: 6px; background: var(--card); }
-.sw { width: 34px; height: 20px; border-radius: 10px; background: var(--line); position: relative; }
-.sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.3); }
-figcaption { padding: 8px 12px 10px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
 
 .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); padding: 0; }
 .fact { padding: 24px; border-right: 1px solid var(--line); }
@@ -82,6 +61,15 @@ sup a { color: var(--accent); text-decoration: none; font-weight: 700; }
 .section { padding-top: 80px; padding-bottom: 8px; }
 h2 { margin: 0 0 24px; font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -0.02em; line-height: 1.1; }
 h3 { margin: 0 0 6px; font-size: 19px; }
+.shot { margin: 0; justify-self: end; max-width: 360px; }
+.shot img { display: block; width: 100%; height: auto; border: 2px solid var(--ink); border-radius: 10px; box-shadow: 10px 10px 0 var(--ink); }
+.shot figcaption { padding: 14px 4px 0; border: 0; color: var(--muted); font-size: 13px; }
+.check { margin-top: 32px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); max-width: 480px; }
+.check label { display: block; font-weight: 700; margin-bottom: 8px; }
+.check-row { display: flex; gap: 10px; }
+.check input { flex: 1; min-width: 0; padding: 8px 10px; border: 2px solid var(--ink); border-radius: 6px; background: var(--bg); color: var(--ink); font: 15px var(--mono); }
+.check .fine { display: block; margin-top: 8px; }
+.steps img { display: block; width: 100%; height: auto; margin-top: 16px; border: 1px solid var(--line); border-radius: 6px; }
 .seen ul { padding-left: 22px; }
 .seen li { margin: 6px 0; }
 .seen > p:first-of-type { color: var(--muted); max-width: 46em; }
@@ -109,7 +97,7 @@ h3 { margin: 0 0 6px; font-size: 19px; }
 
 @media (max-width: 900px) {
   .hero, .split { grid-template-columns: 1fr; gap: 40px; }
-  .popup { justify-self: start; }
+  .shot { justify-self: start; }
   .facts, .crops { grid-template-columns: 1fr 1fr; }
   .fact:nth-child(2) { border-right: 0; }
   .fact:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
@@ -119,5 +107,8 @@ h3 { margin: 0 0 6px; font-size: 19px; }
 @media (max-width: 520px) {
   .facts, .crops { grid-template-columns: 1fr; }
   .fact { border-right: 0; border-bottom: 1px solid var(--line); }
-  .popup { box-shadow: 6px 6px 0 var(--ink); }
+  .shot img { box-shadow: 6px 6px 0 var(--ink); }
 }
+/* Tall popup screenshots: show the top, where the result is. */
+.shot img { max-height: 640px; object-fit: cover; object-position: top; }
+.steps img { max-height: 420px; object-fit: cover; object-position: top; }
