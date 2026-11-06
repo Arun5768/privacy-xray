@@ -11,6 +11,15 @@ cpSync('src/popup/popup.css', 'dist/popup.css');
 cpSync('src/welcome/welcome.html', 'dist/welcome.html');
 cpSync('src/welcome/welcome.css', 'dist/welcome.css');
 cpSync('src/icons', 'dist/icons', { recursive: true });
+cpSync('src/audit/audit.html', 'dist/audit.html');
+cpSync('src/audit/audit.css', 'dist/audit.css');
+// Extension pages share the website's design system and bundled fonts.
+cpSync('site/assets/app.css', 'dist/app.css');
+for (const [from, to] of [
+  ['@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2', 'bricolage.woff2'],
+  ['@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2', 'instrument-serif-italic.woff2'],
+  ['@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2', 'jetbrains-mono.woff2'],
+]) cpSync(`node_modules/${from}`, `dist/fonts/${to}`);
 // The website uses the same logo.
 cpSync('src/icons/logo.svg', 'docs/img/logo.svg');
 cpSync('src/icons/icon-32.png', 'docs/favicon.png');
@@ -25,6 +34,7 @@ const options = {
     inject: 'src/inject.ts',
     popup: 'src/popup/popup.ts',
     welcome: 'src/welcome/welcome.ts',
+    audit: 'src/audit/audit.ts',
   },
   outdir: 'dist',
   bundle: true,

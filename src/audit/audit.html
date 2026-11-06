@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Audit agent · 0xRay</title>
+  <link rel="icon" href="icons/icon-32.png" />
+  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="audit.css" />
+</head>
+<body>
+  <div class="mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+  <main class="wrap audit">
+    <header class="a-head">
+      <img src="icons/icon-128.png" width="56" height="56" alt="" />
+      <div>
+        <p class="kicker"><i></i>Audit agent</p>
+        <h1 class="display">Who would <em class="pink">see you</em> here?</h1>
+      </div>
+    </header>
+    <p class="lede">The agent opens popular crypto sites in background tabs, each with a <b>random decoy address</b> that belongs to nobody, watches for 10 seconds who receives it, then closes the tab. Your real address is never used.</p>
+
+    <div class="a-controls">
+      <button id="start" class="btn btn-lime">Run audit <span class="arrow">→</span></button>
+      <span id="meta" class="mono muted"></span>
+    </div>
+    <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+    <section id="summary" class="a-summary" hidden></section>
+    <ol id="sites" class="a-sites"></ol>
+
+    <p class="fine mono muted">Tabs open in the background and close by themselves. Sites see an ordinary visit to a random address's page. Results stay in this browser session.</p>
+  </main>
+  <script src="audit.js"></script>
+</body>
+</html>
