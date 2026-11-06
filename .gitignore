@@ -8,3 +8,5 @@ test/e2e-*.png
 test/welcome.png
 test/audit.png
 test/e2e-welcome.png
+test/site-*.png
+.shots.tmp.mjs

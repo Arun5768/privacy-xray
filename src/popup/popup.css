@@ -1,4 +1,4 @@
-@font-face { font-family: 'Bricolage'; src: url('fonts/bricolage.woff2') format('woff2'); font-weight: 200 800; }
+@font-face { font-family: 'Grotesk'; src: url('fonts/space-grotesk.woff2') format('woff2'); font-weight: 300 700; }
 @font-face { font-family: 'JBMono'; src: url('fonts/jetbrains-mono.woff2') format('woff2'); font-weight: 100 800; }
 :root {
   --bg: #07090d;
@@ -12,7 +12,7 @@
   --warn: #ffb547;
   --ok: #39f0d0;
   --mono: 'JBMono', ui-monospace, Consolas, monospace;
-  --sans: 'Bricolage', system-ui, sans-serif;
+  --sans: 'Grotesk', system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
 body {
