@@ -394,6 +394,17 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
           const redacted = redactAll(msg.payload.requestUrl, needles);
           for (const l of state.leaks[tabId] ?? []) if (l.requestUrl === redacted && !l.initiatorScript) l.initiatorScript = msg.payload.initiatorScript;
           pruneHints();
+          // A request sent right after connecting can leave before this worker
+          // has the new address, so webRequest doesn't flag it. If it still
+          // isn't recorded shortly after, record it from the page's report
+          // (record() skips duplicates).
+          const p = msg.payload;
+          setTimeout(() => {
+            const match = scan(p.requestUrl, needles, 'query') ?? scan(p.body, needles, 'body');
+            if (match && isThirdParty(pageUrl, p.requestUrl)) {
+              record({ tabId, pageUrl, requestUrl: p.requestUrl, method: p.method, resourceType: p.resourceType, body: p.body ?? null, match, blocked: false, initiatorScript: p.initiatorScript });
+            }
+          }, 1200);
         } else if (msg.kind === 'leak' && msg.payload) {
           // Requests stopped inside the page (Protect) or sent over WebSocket
           // never reach webRequest, so the page hook reports them directly.
