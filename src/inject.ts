@@ -45,9 +45,14 @@ import type { Needle } from './shared/types.ts';
     if (!p || typeof p !== 'object' || wrapped.has(p) || typeof p.request !== 'function') return;
     wrapped.add(p);
     const orig = p.request;
-    const request = async function (this: unknown, args: any) {
-      const result = await orig.call(p, args);
-      if (args?.method === 'eth_requestAccounts' || args?.method === 'eth_accounts') note(result);
+    // Call the wallet exactly as the dApp did (same `this`, same arguments,
+    // synchronously so the user's click still counts) and hand back the
+    // wallet's own promise. We only watch the result on the side.
+    const request = function (this: unknown, args: any) {
+      const result = orig.apply(this ?? p, arguments);
+      if ((args?.method === 'eth_requestAccounts' || args?.method === 'eth_accounts') && typeof result?.then === 'function') {
+        result.then(note, () => {});
+      }
       return result;
     };
     try {
