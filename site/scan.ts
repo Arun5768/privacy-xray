@@ -53,14 +53,17 @@ function log(text: string, kind: 'run' | 'ok' | 'warn' | 'bad' = 'run') {
   return li;
 }
 
+let lastFailed = false;
 async function step<T>(label: string, fn: () => Promise<T>, done: (v: T) => string): Promise<T | null> {
   const li = log(`› ${label}`);
+  lastFailed = false;
   try {
     const v = await fn();
     li.className = 'ok';
     li.textContent = `✓ ${done(v)}`;
     return v;
   } catch (e) {
+    lastFailed = true;
     li.className = 'warn';
     li.textContent = `! ${label} failed: ${(e as Error).message.split('\n')[0].slice(0, 80)}`;
     return null;
@@ -117,8 +120,9 @@ async function run(input: string) {
       address = await step(`Resolving ${name} on Ethereum…`, () => eth.getEnsAddress({ name: name! }), (a) => (a ? `${name} → ${short(a)}` : `${name} has no address`));
     }
     if (!address) {
-      log('✗ Not a valid address or ENS name.', 'bad');
-      setScore(0, 'Nothing to scan', '#ff4fa3');
+      const offline = name && lastFailed;
+      log(offline ? '✗ Could not reach the Ethereum RPC. Check your connection and try again.' : '✗ Not a valid address or ENS name.', 'bad');
+      setScore(0, offline ? 'Network error' : 'Nothing to scan', '#ff4fa3');
       return;
     }
     $('who').textContent = name ?? short(address);
