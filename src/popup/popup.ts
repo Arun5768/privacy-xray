@@ -47,7 +47,12 @@ function render() {
   const recipients = groupByRecipient(leaks);
 
   const status = $('status');
-  if (!addresses.length) {
+  // Browser pages (new tab, settings, extensions) can't be watched.
+  const web = !pageUrl || /^https?:/.test(pageUrl);
+  if (!web) {
+    status.className = 'status idle';
+    status.textContent = '● Open a website to check it. Browser pages are not watched';
+  } else if (!addresses.length) {
     status.className = 'status idle';
     status.textContent = '● Waiting for a wallet address: connect your wallet or add one below';
   } else if (open.length) {
@@ -62,12 +67,14 @@ function render() {
     status.textContent = '● No third party has received your address on this page';
   }
 
-  $('grade').textContent = addresses.length ? grade(leaks) : '–';
-  $('page').textContent = pageUrl ? new URL(pageUrl).host : '';
+  const g = addresses.length && web ? grade(leaks) : '–';
+  $('grade').textContent = g;
+  $('grade').title = g === '–' ? 'Privacy grade for this page' : `Privacy grade for this page: ${g} (A = nothing leaked, F = 3 or more trackers)`;
+  $('page').textContent = !web ? 'Browser page' : pageUrl ? new URL(pageUrl).host : '';
 
   // Show the work being done, not only the results.
   const act = $('activity');
-  if (addresses.length) {
+  if (addresses.length && web) {
     const carried = new Set(leaks.map((l) => l.recipientHost)).size;
     act.innerHTML = `<b>${view.checked}</b> request${view.checked === 1 ? '' : 's'} to <b>${view.hosts.length}</b> other compan${view.hosts.length === 1 ? "y" : "ies"} checked on this page · <b>${carried}</b> targeted your address`
       + (view.hosts.length ? `<details data-key="hosts"><summary>Companies this page contacted</summary><div class="hosts">${view.hosts.map((h) => `<code>${esc(h)}</code>`).join(' ')}</div></details>` : '');
@@ -77,7 +84,9 @@ function render() {
   }
 
   const list = $('list');
-  if (!addresses.length) {
+  if (!web) {
+    list.innerHTML = `<div class="empty"><strong>Nothing to check here</strong>This is a browser page, not a website. Open any site or dApp and 0xRay starts watching what it sends.</div>`;
+  } else if (!addresses.length) {
     list.innerHTML = `<div class="empty"><strong>How it works</strong>
       <ol class="how">
         <li><b>Connect your wallet</b> on this site as usual. 0xRay learns your address on this device only.</li>
