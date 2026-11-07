@@ -87,6 +87,12 @@ body[data-page='scan'] [data-nav='scan'], body[data-page='how'] [data-nav='how']
 .pill-live.ok { color: var(--lime); }
 .pill-cta { display: flex; align-items: center; gap: 8px; padding: 4px 14px 4px 4px; border-radius: 11px; border: 1px solid var(--lime); color: var(--lime); text-decoration: none; font: 600 14px var(--mono); transition: background 0.2s; }
 .pill-cta b { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--lime); color: var(--bg); font-size: 22px; font-weight: 400; transition: transform 0.3s var(--ease); }
+.pill-cta span { white-space: nowrap; }
+.pill-menu { display: none; flex-direction: column; justify-content: center; gap: 4px; width: 44px; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; cursor: pointer; }
+.pill-menu i { display: block; height: 2px; border-radius: 2px; background: var(--text); transition: transform 0.25s var(--ease), opacity 0.2s; }
+.pill.open .pill-menu i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.pill.open .pill-menu i:nth-child(2) { opacity: 0; }
+.pill.open .pill-menu i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 .pill-cta:hover { background: rgb(60 240 212 / 0.1); }
 .pill-cta:hover b { transform: rotate(90deg); }
 
@@ -325,9 +331,10 @@ sup a { color: var(--lime); text-decoration: none; font: 700 11px var(--mono); }
 
 /* ===== Registry ===== */
 .reg { padding-bottom: 140px; }
-.table-wrap { overflow-x: auto; }
+.table-wrap { overflow-x: auto; max-width: 100%; min-width: 0; }
 .table-wrap table { width: 100%; border-collapse: collapse; font-size: 15px; font-family: var(--mono); }
 .table-wrap th { padding: 10px 14px; text-align: left; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dim); border-bottom: 1px solid var(--line-2); }
+.table-wrap table { min-width: 640px; }
 .table-wrap td { padding: 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .table-wrap td:first-child { color: var(--lime); }
 .table-wrap td code { border: 0; padding: 0; background: none; color: var(--muted); font-size: 12px; }
@@ -372,7 +379,12 @@ sup a { color: var(--lime); text-decoration: none; font: 700 11px var(--mono); }
   .teams, .reg-about { grid-template-columns: 1fr; }
   .report-top { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .report-grid { grid-template-columns: 1fr; }
-  .pill-links, .pill-live { display: none; }
+  .pill-live { display: none; }
+  .pill-menu { display: flex; }
+  .pill-links { display: none; position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); flex-direction: column; padding: 6px; border-radius: 16px; background-color: #0a1415; border: 1px solid var(--line-2); box-shadow: 0 20px 60px -20px rgb(0 0 0 / 0.9); }
+  .pill.open .pill-links { display: flex; }
+  .pill-links a { padding: 12px 14px; }
+  .linkish { display: inline-block; padding: 6px 0; }
   .foot-in { grid-template-columns: 1fr; }
   .section { padding: 80px 0; }
 }
@@ -390,3 +402,4 @@ sup a { color: var(--lime); text-decoration: none; font: 700 11px var(--mono); }
   .st-frame { width: 94%; }
 }
 .dimtag { color: var(--dim); }
+#publisher { word-break: break-all; }

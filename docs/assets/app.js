@@ -67,6 +67,22 @@
     } catch {}
   }
 
+  // ---- Phone menu (the pill hides its links on small screens) ----------------
+  const pill = document.querySelector('.pill');
+  const menu = $('pillMenu');
+  if (pill && menu) {
+    const close = () => {
+      pill.classList.remove('open');
+      menu.setAttribute('aria-expanded', 'false');
+    };
+    menu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.setAttribute('aria-expanded', String(pill.classList.toggle('open')));
+    });
+    document.addEventListener('click', (e) => !pill.contains(e.target) && close());
+    addEventListener('keydown', (e) => e.key === 'Escape' && close());
+  }
+
   // ---- Live status (in the pill) --------------------------------------------
   const live = $('live');
   const liveText = $('liveText');
@@ -100,7 +116,8 @@
   const sections = [...document.querySelectorAll('[data-tab]')];
   if (tabs && sections.length) {
     const links = sections.map((s) => {
-      if (!s.id) s.id = s.dataset.tab;
+      // Never reuse an id the page already has (e.g. registry's #results).
+      if (!s.id) s.id = document.getElementById(s.dataset.tab) ? `${s.dataset.tab}-section` : s.dataset.tab;
       const a = document.createElement('a');
       a.className = 'tab';
       a.href = `#${s.id}`;
