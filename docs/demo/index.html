@@ -158,14 +158,21 @@
       });
     }
 
-    let busy = false;
+    // Each click is its own attempt. Buttons are never locked: a wallet popup that
+    // never appears (locked wallet, popup behind the window, browser routing to
+    // another wallet) must not leave the page dead.
+    let attempt = 0;
     async function connect(provider, name) {
-      if (busy) return;
-      busy = true;
-      document.querySelectorAll('button').forEach((b) => (b.disabled = true));
+      const mine = ++attempt;
+      const hint = setTimeout(() => {
+        if (mine !== attempt) return;
+        log(`No answer from ${name} yet. Its popup may be behind this window: click the ${name} icon in your toolbar, unlock it, or click Connect again. In Brave, check Settings → Web3 → Default Ethereum wallet is set to your extension. Or use the demo wallet above.`, 'bad');
+      }, 8000);
       try {
         log(`Asking ${name} for your address… (approve in the wallet popup)`);
         const accounts = await provider.request({ method: 'eth_requestAccounts' });
+        clearTimeout(hint);
+        if (mine !== attempt) return; // a newer attempt took over
         const address = accounts?.[0];
         if (!address) throw new Error('The wallet returned no account.');
         log(`${name} shared your address: ${short(address)}`, 'ok');
@@ -184,11 +191,12 @@
           ? 'Done. Click the 0xRay icon in your toolbar to see each leak, with proof.'
           : 'Done. Without 0xRay, nothing on your screen tells you this happened.', 'ok');
       } catch (e) {
-        const msg = e?.code === 4001 ? 'You declined the connection in your wallet.' : e?.message || String(e);
+        clearTimeout(hint);
+        const msg =
+          e?.code === 4001 ? 'You declined the connection in your wallet.'
+          : e?.code === -32002 ? `${name} already has a connection request open. Open ${name} from your toolbar to answer it.`
+          : e?.message || String(e);
         log(`Couldn't connect: ${msg}`, 'bad');
-      } finally {
-        busy = false;
-        document.querySelectorAll('button').forEach((b) => (b.disabled = false));
       }
     }
 
